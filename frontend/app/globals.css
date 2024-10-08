@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 html {
-    background: #0F0F0F;
+    background: #282D4E;
     color: white;
 }
 
@@ -47,6 +47,10 @@ input[type=number]::-webkit-outer-spin-button {
     height: 100%;
     width: 100%;
     animation: animated 0.5s steps(4) infinite;
+}
+
+.gradient {
+    background-image: linear-gradient(#202540, #252c5d 42%, #3a3dab);
 }
 
 @keyframes animated {

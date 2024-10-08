@@ -16,8 +16,8 @@ module.exports = {
             'rainbow-less-disabled': "linear-gradient(45deg, darkred, darkblue, darkindigo)",
         },
       colors: {
-        primary: "#0F0F0F",
-        secondary: "#232D3F",
+        primary: "#282D4E",
+        secondary: "#323A64",
         darkblue: "#2e3b52",
         lightblue: "#465b82",
         tertiary: "#005B41",

@@ -1,8 +1,13 @@
-import { Nunito_Sans } from 'next/font/google'
+import { Nunito_Sans, DM_Sans } from 'next/font/google'
 import "./globals.css";
 import Layout from '@/components/Layout/Layout'
 
 const nunito = Nunito_Sans({
+    subsets: ['latin'],
+    weight: ['400', '500', '600', '700'],
+})
+
+const dmSans = DM_Sans({
     subsets: ['latin'],
     weight: ['400', '500', '600', '700'],
 })
@@ -13,8 +18,8 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "realms",
-  description: "Create a realm with your friends and integrate with your Discord server.",
+  title: "Gather",
+  description: "This is a Gather Town clone.",
 }
 
 export default function RootLayout({
@@ -23,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={nunito.className}>
+    <html lang="en" className={dmSans.className}>
       <body>
         <Layout>
             {children}

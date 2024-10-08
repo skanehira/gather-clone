@@ -75,19 +75,19 @@ const DesktopRealmItem:React.FC<DesktopRealmItemProps> = ({ name, id, shareId, s
                 <p>{name}</p>
                 {!shared && (
                     <div className='flex flex-row'>
-                        <LinkIcon className='h-7 w-7 cursor-pointer hover:bg-neutral-900 rounded-md p-1' onClick={copyShareLink}/>
+                        <LinkIcon className='h-7 w-7 cursor-pointer hover:bg-[#545C8E] rounded-md p-1' onClick={copyShareLink}/>
                     <div ref={dotsRef}>
-                        <DotsThreeVertical className='h-7 w-7 cursor-pointer hover:bg-neutral-900 rounded-md p-1' onClick={handleDotsClick}/>
+                        <DotsThreeVertical className='h-7 w-7 cursor-pointer hover:bg-[#545C8E] rounded-md p-1' onClick={handleDotsClick}/>
                     </div>
                 </div>)}
             </div>
             {showMenu && (
-                <div className='absolute w-36 h-24 rounded-lg bg-secondary right-0 flex flex-col z-10' ref={menuRef}>
-                    <button className='grow w-full hover:bg-lightblue rounded-t-lg text-left pl-4' onClick={() => router.push(`/editor/${id}`)}>
+                <div className='absolute w-36 h-24 rounded-lg bg-white right-0 flex flex-col z-10 text-black' ref={menuRef}>
+                    <button className='grow w-full hover:bg-[#B2C5FF] rounded-t-lg text-left pl-4' onClick={() => router.push(`/editor/${id}`)}>
                         Edit Map
                     </button>
-                    <button className='grow w-full hover:bg-lightblue text-left pl-4' onClick={() => router.push(`/manage/${id}`)}>Manage</button>
-                    <button className='grow w-full hover:bg-red-500 rounded-b-lg text-left pl-4' onClick={handleDelete}>Delete</button>
+                    <button className='grow w-full hover:bg-[#B2C5FF] text-left pl-4' onClick={() => router.push(`/manage/${id}`)}>Manage</button>
+                    <button className='grow w-full hover:bg-red-500 hover:text-white rounded-b-lg text-left pl-4' onClick={handleDelete}>Delete</button>
                 </div>
             )}
         </div>
