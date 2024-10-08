@@ -8,8 +8,6 @@ import revalidate from '@/utils/revalidate'
 import { useModal } from '../hooks/useModal'
 import { Copy } from '@phosphor-icons/react'
 import { v4 as uuidv4 } from 'uuid'
-import Toggle from '@/components/Toggle'
-import { unlinkFromDiscord } from '@/utils/supabase/unlinkFromDiscord'
 import BasicInput from '@/components/BasicInput'
 import { removeExtraSpaces } from '@/utils/removeExtraSpaces'
 

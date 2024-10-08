@@ -1,6 +1,6 @@
 'use client'
 import { createClient } from '@/utils/supabase/client'
-import DiscordSignInButton from './GoogleSignInButton'
+import GoogleSignInButton from './GoogleSignInButton'
 
 export default function Login() {
 
@@ -16,7 +16,7 @@ export default function Login() {
 
   return (
     <div className='flex flex-col items-center w-full pt-56'>
-        <DiscordSignInButton onClick={signInWithGoogle}/>
+        <GoogleSignInButton onClick={signInWithGoogle}/>
     </div>
   );
 }

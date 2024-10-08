@@ -25,3 +25,8 @@ export function getRoomNames(mapData: RealmData) {
 export function getRoomNamesWithChannelId(mapData: RealmData, channelId: string) {
     return mapData.rooms.filter(room => room.channelId === channelId).map(room => room.name)
 }
+
+export function formatEmailToName(email: string) {
+    const name = email.split('@')[0]
+    return name
+}

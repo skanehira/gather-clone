@@ -4,7 +4,6 @@ import http from 'http'
 import { Server as SocketIOServer } from 'socket.io'
 import { sockets } from './sockets/sockets'
 import routes from './routes/routes'
-import { client, setUpClient } from './discord/client'
 import { supabase } from './supabase'
 import { sessionManager } from './session'
 
@@ -24,13 +23,6 @@ const io = new SocketIOServer(server, {
   }
 })
 
-if (process.env.LOGIN_BOT === 'true') {
-    setUpClient()
-    client.login(process.env.BOT_TOKEN)
-} else {
-    console.log('Skipping bot login.')
-}
-
 app.use(routes())
 
 sockets(io)
@@ -39,9 +31,6 @@ function onRealmUpdate(payload: any) {
     const id = payload.new.id
     let refresh = false
     if (JSON.stringify(payload.new.map_data) !== JSON.stringify(payload.old.map_data)) {
-        refresh = true
-    }
-    if (payload.new.discord_server_id !== payload.old.discord_server_id) {
         refresh = true
     }
     if (payload.new.privacy_level !== payload.old.privacy_level) {

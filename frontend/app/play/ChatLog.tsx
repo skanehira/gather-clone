@@ -57,19 +57,12 @@ const ChatLog: React.FC<ChatLogProps> = () => {
             }])
         }
 
-        const discordMessage = (message: Message) => {
-            setMessages(prevMessages => [message, ...prevMessages])
-            containerRef.current?.scrollTo(0, containerRef.current.scrollHeight)
-        }
-
         signal.on('newMessage', onNewMessage)
         signal.on('newRoomChat', onNewRoomChat)
-        signal.on('discordMessage', discordMessage)
 
         return () => {
             signal.off('newMessage', onNewMessage)
             signal.off('newRoomChat', onNewRoomChat)
-            signal.off('discordMessage', discordMessage)
         }
     }, [])
 

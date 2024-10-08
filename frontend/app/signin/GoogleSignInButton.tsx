@@ -8,7 +8,7 @@ const GoogleSignInButton:React.FC<GoogleSignInButtonProps> = ({ onClick }) => {
     
     return (
         <button className='h-16 w-64 bg-white hover:opacity-70 rounded-md flex items-center justify-center space-x-3 p-2' onClick={onClick}>
-            <img src='/google-logo.png' alt="Discord logo" className='h-10' />
+            <img src='/google-logo.png' alt="Google logo" className='h-10' />
             <span className='text-black text-lg'>Sign in with Google</span>
         </button>
     );

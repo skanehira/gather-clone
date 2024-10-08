@@ -5,7 +5,6 @@ import * as PIXI from 'pixi.js'
 import { server } from '../backend/server'
 import { defaultSkin } from './Player/skins'
 import signal from '../signal'
-import { request } from '../backend/requests'
 import { createClient } from '../supabase/client'
 
 export class PlayApp extends App {
@@ -348,14 +347,6 @@ export class PlayApp extends App {
         })
     }
 
-    private onDiscordMessage = (data: any) => {
-        signal.emit('discordMessage', {
-            content: data.content,
-            username: data.username,
-            color: 'cyan',
-        })
-    }
-
     private setUpSocketEvents = () => {
         server.socket.on('playerLeftRoom', this.onPlayerLeftRoom)
         server.socket.on('playerJoinedRoom', this.onPlayerJoinedRoom)
@@ -365,7 +356,6 @@ export class PlayApp extends App {
         server.socket.on('receiveMessage', this.onReceiveMessage)
         server.socket.on('disconnect', this.onDisconnect)
         server.socket.on('kicked', this.onKicked)
-        server.socket.on('discordMessage', this.onDiscordMessage)
     }
 
     private removeSocketEvents = () => {
@@ -377,7 +367,6 @@ export class PlayApp extends App {
         server.socket.off('receiveMessage', this.onReceiveMessage)
         server.socket.off('disconnect', this.onDisconnect)
         server.socket.off('kicked', this.onKicked)
-        server.socket.off('discordMessage', this.onDiscordMessage)
     }
 
     private removeEvents = () => {

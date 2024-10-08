@@ -6,7 +6,7 @@ import { users } from '../Users'
 import { sessionManager } from '../session'
 import { removeExtraSpaces } from '../utils'
 import { kickPlayer } from './helpers'
-import { sendMessageToChannel, userIsInGuildWithId } from '../discord/utils'
+import { formatEmailToName } from '../utils'
 
 const joiningInProgress = new Set<string>()
 
@@ -97,12 +97,12 @@ export function sockets(io: Server) {
                 } 
             }
 
-            const { data, error } = await supabase.from('realms').select('privacy_level, owner_id, share_id, map_data, discord_server_id, only_owner').eq('id', realmData.realmId).single()
+            const { data, error } = await supabase.from('realms').select('privacy_level, owner_id, share_id, map_data, only_owner').eq('id', realmData.realmId).single()
 
             if (error || !data) {
                 return rejectJoin('Realm not found.')
             }
-            const { data: profile, error: profileError } = await supabase.from('profiles').select('skin, discord_id').eq('id', uid).single()
+            const { data: profile, error: profileError } = await supabase.from('profiles').select('skin').eq('id', uid).single()
             if (profileError) {
                 return rejectJoin('Failed to get profile.')
             }
@@ -111,7 +111,7 @@ export function sockets(io: Server) {
 
             const join = async () => {
                 if (!sessionManager.getSession(realmData.realmId)) {
-                    sessionManager.createSession(realmData.realmId, data.map_data, data.discord_server_id, data.privacy_level)
+                    sessionManager.createSession(realmData.realmId, data.map_data, data.privacy_level)
                 }
 
                 const currentSession = sessionManager.getPlayerSession(uid)
@@ -120,8 +120,8 @@ export function sockets(io: Server) {
                 }
 
                 const user = users.getUser(uid)!
-                const username = user.user_metadata.custom_claims.global_name || user.user_metadata.full_name
-                sessionManager.addPlayerToSession(socket.id, realmData.realmId, uid, username, profile.skin, profile.discord_id)
+                const username = formatEmailToName(user.user_metadata.email)
+                sessionManager.addPlayerToSession(socket.id, realmData.realmId, uid, username, profile.skin)
                 const newSession = sessionManager.getPlayerSession(uid)
                 const player = newSession.getPlayer(uid)   
 
@@ -139,24 +139,11 @@ export function sockets(io: Server) {
                 return rejectJoin('This realm is private right now. Come back later!')
             }
 
-            if (realm.privacy_level === 'discord') {
-                const discordId = users.getUser(socket.handshake.query.uid as string)!.user_metadata.provider_id
-                const isInGuild = await userIsInGuildWithId(discordId, realm.discord_server_id)
-
-                if (isInGuild) {
-                    return join()
-                } else {
-                    return rejectJoin('User is not in the Discord server.')
-                }
-            } else if (realm.privacy_level === 'anyone') {
-                if (realm.share_id === realmData.shareId) {
-                    return join()
-                } else {
-                    return rejectJoin('The share link has been changed.')
-                }
+            if (realm.share_id === realmData.shareId) {
+                return join()
+            } else {
+                return rejectJoin('The share link has been changed.')
             }
-
-           return rejectJoin('Unknown.')
         })
 
         // Handle a disconnection
@@ -211,16 +198,6 @@ export function sockets(io: Server) {
 
             const uid = socket.handshake.query.uid as string
             emit('receiveMessage', { uid, message })
-
-            // send message to discord 
-            const roomIndex = session.getPlayerRoom(uid)
-            const channelId = session.map_data.rooms[roomIndex].channelId   
-            if (channelId && session.discord_id) {
-                const username = session.getPlayer(uid).username
-                const discordMessage = `**${username}** ${message}`
-                const senderId = users.getUser(uid)!.user_metadata.provider_id
-                sendMessageToChannel(senderId, session.discord_id, channelId, discordMessage)
-            }
         })
     })
 }

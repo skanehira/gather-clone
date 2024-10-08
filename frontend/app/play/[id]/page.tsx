@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { getPlayRealmData } from '@/utils/supabase/getPlayRealmData'
 import PlayClient from '../Play'
 import { updateVisitedRealms } from '@/utils/supabase/updateVisitedRealms'
+import { formatEmailToName } from '@/utils/formatEmailToName'
 
 export default async function Play({ params, searchParams }: { params: { id: string }, searchParams: { shareId: string } }) {
 
@@ -36,7 +37,7 @@ export default async function Play({ params, searchParams }: { params: { id: str
     return (
         <PlayClient 
             mapData={map_data} 
-            username={user.user_metadata.custom_claims.global_name || user.user_metadata.full_name} 
+            username={formatEmailToName(user.user_metadata.email)} 
             access_token={session.access_token} 
             realmId={params.id} 
             uid={user.id} 
