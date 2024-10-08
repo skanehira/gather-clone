@@ -19,17 +19,13 @@ export class PlayApp extends App {
     private uid: string = ''
     private players: { [key: string]: Player } = {}
     private disableInput: boolean = false
-    private serverId: string
-    private discordId: string
 
     private kicked: boolean = false
 
-    constructor(uid: string, realmData: RealmData, username: string, skin: string = defaultSkin, serverId: string, discordId: string) {
+    constructor(uid: string, realmData: RealmData, username: string, skin: string = defaultSkin) {
         super(realmData)
         this.uid = uid
         this.player = new Player(skin, this, username, true)
-        this.serverId = serverId
-        this.discordId = discordId
     }
 
     override async loadRoom(index: number) {
@@ -345,13 +341,6 @@ export class PlayApp extends App {
         const { data: { session } } = await supabase.auth.getSession()
         if (!session) return
         let channelName = ''
-
-        if (this.serverId) {
-            const { data, error } = await request('/getChannelName', { userId: this.discordId, serverId: this.serverId, channelId: this.realmData.rooms[this.currentRoomIndex].channelId }, session.access_token)
-            if (data) {
-                channelName = data.name
-            }
-        }
 
         signal.emit('newRoomChat', {
             name: this.realmData.rooms[this.currentRoomIndex].name,

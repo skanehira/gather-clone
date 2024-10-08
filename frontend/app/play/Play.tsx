@@ -6,7 +6,6 @@ import PlayNavbar from './PlayNavbar'
 import { useModal } from '../hooks/useModal'
 import signal from '@/utils/signal'
 import ChatLog from './ChatLog'
-import revalidate from '@/utils/revalidate'
 
 type PlayProps = {
     mapData: RealmData
@@ -16,11 +15,9 @@ type PlayProps = {
     uid: string
     shareId: string
     initialSkin: string
-    serverId: string
-    discordId: string,
 }
 
-const PlayClient:React.FC<PlayProps> = ({ mapData, username, access_token, realmId, uid, shareId, initialSkin, serverId, discordId }) => {
+const PlayClient:React.FC<PlayProps> = ({ mapData, username, access_token, realmId, uid, shareId, initialSkin }) => {
 
     const { setErrorModal, setDisconnectedMessage } = useModal()
 
@@ -55,8 +52,6 @@ const PlayClient:React.FC<PlayProps> = ({ mapData, username, access_token, realm
                 uid={uid} 
                 shareId={shareId} 
                 initialSkin={initialSkin} 
-                serverId={serverId}
-                discordId={discordId}
             />
             <PlayNavbar />
             <ChatLog />
