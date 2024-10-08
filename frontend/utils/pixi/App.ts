@@ -15,6 +15,7 @@ export class App {
     protected currentRoomIndex: number = 0    
     protected realmData: RealmData
     protected collidersFromSpritesMap: ColliderMap = {}
+    protected backgroundColor: number = 0x0F0F0F
 
     constructor(realmData: RealmData) {
         this.realmData = JSON.parse(JSON.stringify(realmData))
@@ -28,7 +29,7 @@ export class App {
 
         await this.app.init({
             resizeTo: container,
-            backgroundColor: 0xFFFFFF,
+            backgroundColor: this.backgroundColor,
             roundPixels: true,
         })
         this.initialized = true

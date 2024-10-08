@@ -37,6 +37,7 @@ export class EditorApp extends App {
     private spawnTile: PIXI.Sprite = new PIXI.Sprite()
 
     public async init() {
+        this.backgroundColor = 0xFFFFFF
         await this.loadAssets()
         await super.init()
         await this.loadRoom(this.currentRoomIndex)
