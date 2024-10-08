@@ -50,7 +50,7 @@ const TeleportModal:React.FC<TeleportModalProps> = () => {
                             return (
                                 <div 
                                     key={index} 
-                                    className={`${selectedRoomIndex === index ? 'border-white' : 'border-secondary'} border-4 bg-quaternary px-1 rounded-lg cursor-pointer w-36 text-center hover:bg-quaternaryhover`}
+                                    className={`${selectedRoomIndex === index ? 'border-white' : 'border-secondary'} border-2 bg-quaternary px-1 rounded-lg cursor-pointer w-36 text-center hover:bg-quaternaryhover`}
                                     onClick={() => selectRoom(index)}
                                 >
                                     {room}
