@@ -5,7 +5,7 @@ import BasicButton from '@/components/BasicButton';
 export default async function Index() {
 
   return (
-    <div className='w-full grid place-items-center h-screen gradient'>
+    <div className='w-full grid place-items-center h-screen gradient p-4'>
         <div className='max-w-[600px]'>
             <h1 className='font-semibold text-3xl'>Welcome to My Gather Town Clone!</h1>   
             <p className='w-full text-xl my-6'>
