@@ -17,7 +17,7 @@ export const NavbarChild:React.FC<NavbarChildProps> = ({ name, avatar_url }) => 
         <div className='h-16'>
             <div className='w-full fixed bg-secondary flex flex-row items-center p-2 pl-4 justify-end sm:justify-between z-10'>
                 <BasicButton onClick={() => setModal('Create Realm')} className='hidden sm:flex flex-row items-center gap-2 py-3'>
-                    Create Realm
+                    Create Space
                     <PlusCircleIcon className='h-5'/>
                 </BasicButton>
                 <div className='flex flex-row items-center gap-4 hover:bg-light-secondary rounded-full cursor-pointer py-1 px-1 select-none' onClick={() => setModal('Account Dropdown')}>

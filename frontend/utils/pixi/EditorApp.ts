@@ -408,7 +408,7 @@ export class EditorApp extends App {
         tile.y = y * 32
 
         const existingTile = this.getTileAtPosition(x, y, layer as Layer)
-        if (existingTile) {
+        if (existingTile && layer !== 'gizmo') {
             this.deleteSpriteColliders(x, y, layer)
             this.layers[layer as Layer].removeChild(existingTile)
         } else {
