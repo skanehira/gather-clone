@@ -1,6 +1,7 @@
 import React from 'react'
 import { createClient } from '@/utils/supabase/server'
 import { NavbarChild } from './NavbarChild'
+import { formatEmailToName } from '@/utils/formatEmailToName'
 
 export const Navbar:React.FC = async () => {
 
@@ -8,7 +9,9 @@ export const Navbar:React.FC = async () => {
 
     const { data: { user } } = await supabase.auth.getUser()
 
+    console.log(user?.user_metadata)
+
     return (
-        <NavbarChild name={user?.user_metadata.custom_claims.global_name || user?.user_metadata.full_name} avatar_url={user?.user_metadata.avatar_url}/>
+        <NavbarChild name={formatEmailToName(user?.user_metadata.email)} avatar_url={user?.user_metadata.picture}/>
     )
 }
