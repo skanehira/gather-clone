@@ -42,7 +42,7 @@ const CreateRealmModal:React.FC = () => {
             setRealmName('')
             revalidate('/app')
             setModal('None')
-            toast.success('Your new realm has been created!')
+            toast.success('Your space has been created!')
             router.push(`/editor/${data[0].id}`)
         }
 
