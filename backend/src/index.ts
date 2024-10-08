@@ -33,9 +33,6 @@ function onRealmUpdate(payload: any) {
     if (JSON.stringify(payload.new.map_data) !== JSON.stringify(payload.old.map_data)) {
         refresh = true
     }
-    if (payload.new.privacy_level !== payload.old.privacy_level) {
-        refresh = true
-    }
     if (payload.new.share_id !== payload.old.share_id) {
         refresh = true
     }

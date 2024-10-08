@@ -53,8 +53,8 @@ export class SessionManager {
     private playerIdToRealmId: { [key: string]: string } = {}
     private socketIdToPlayerId: { [key: string]: string } = {}
 
-    public createSession(id: string, mapData: RealmData, privacy_level: string): void {
-        const realm = new Session(id, mapData, privacy_level)
+    public createSession(id: string, mapData: RealmData): void {
+        const realm = new Session(id, mapData)
 
         this.sessions[id] = realm
     }
@@ -115,12 +115,10 @@ export class Session {
     public players: { [key: string]: Player } = {}
     public id: string
     public map_data: RealmData 
-    public privacy_level
 
-    constructor(id: string, mapData: RealmData, privacy_level: string) {
+    constructor(id: string, mapData: RealmData) {
         this.id = id
         this.map_data = mapData 
-        this.privacy_level = privacy_level
     }
 
     public addPlayer(socketId: string, uid: string, username: string, skin: string) {
