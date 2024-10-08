@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+    background: #0F0F0F;
+    color: white;
+}
+
+.transparent-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.transparent-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+}
+
+.transparent-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;     /* Firefox */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0; 
+}
+
+.character-container {
+    width: calc(100% * 4);
+    height: calc(100% * 4);
+    animation: animateY 2s steps(4) infinite;
+}
+
+.character {
+    height: 100%;
+    width: 100%;
+    animation: animated 0.5s steps(4) infinite;
+}
+
+@keyframes animated {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes animateY {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-100%);
+    }
+}
