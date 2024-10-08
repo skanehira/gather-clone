@@ -25,8 +25,8 @@ const DeleteRoomModal:React.FC<DeleteRoomModalProps> = () => {
             <div className='p-2 flex flex-col items-center gap-2'>
                 <h1 className='text-center'>Are you sure you want to delete <span className='text-red-500'>{roomToDelete.name}</span>? It will be gone forever!</h1>
                 <div className='flex flex-row items-center gap-2'>
-                    <button className='bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md outline-none' onClick={onClickDelete}>Delete</button>
-                    <button className='bg-darkblue hover:bg-lightblue text-white px-2 py-1 rounded-md outline-none' onClick={onClickCancel}>Cancel</button>
+                    <button className='bg-red-600 hover:bg-red-500 text-white px-2 py-1 rounded-md outline-none' onClick={onClickDelete}>Delete</button>
+                    <button className='bg-darkblue hover:bg-light-secondary text-white px-2 py-1 rounded-md outline-none' onClick={onClickCancel}>Cancel</button>
                 </div>
             </div>
         </Modal>

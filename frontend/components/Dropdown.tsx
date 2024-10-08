@@ -42,7 +42,7 @@ const Dropdown:React.FC<DropdownProps> = ({ items, selectedItem, setSelectedItem
                 <Menu.Item key={item}>
                     {() => (
                         <div
-                            className={`block px-3 text-sm capitalize cursor-pointer text-white bg-darkblue hover:bg-lightblue ${getAlternateStyles()}`}
+                            className={`block px-3 text-sm capitalize cursor-pointer text-white bg-darkblue hover:bg-light-secondary ${getAlternateStyles()}`}
                             onClick={() => setSelectedItem(item)}
                         >
                             {item}

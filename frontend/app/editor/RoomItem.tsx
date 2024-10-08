@@ -102,7 +102,7 @@ const RoomItem:React.FC<RoomItemProps> = ({ rooms, selectedRoomIndex, roomIndex,
     return (
         <div 
             onClick={onRoomClick} 
-            className={`${selectedRoomIndex === roomIndex ? 'bg-lightblue' : 'bg-darkblue cursor-pointer'} hover:bg-lightblue w-full p-1 px-2 rounded-md flex flex-row items-center justify-between`} 
+            className={`${selectedRoomIndex === roomIndex ? 'bg-light-secondary' : 'bg-darkblue cursor-pointer'} hover:bg-light-secondary w-full p-1 px-2 rounded-md flex flex-row items-center justify-between`} 
         >
             <input type='text' value={rooms[roomIndex]} className={`${inputDisabled ? 'pointer-events-none' : ''} grow bg-transparent outline-none select-none`} ref={inputRef} onChange={onInputChange} maxLength={32}/>
             <div className='flex flex-row items-center gap-1'>

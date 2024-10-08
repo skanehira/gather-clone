@@ -53,7 +53,7 @@ const DeleteRealmModal:React.FC<DeleteRealmModalProps> = () => {
             <div className='p-2 flex flex-col items-center gap-2'>
                 <h1 className='text-center'>Are you sure you want to delete <span className='text-red-500 select-none'>{realmToDelete.name}</span>? It will be gone forever!</h1>
                 <h2 className='text-center'>Type <span className='text-red-500 select-none'>{realmToDelete.name}</span> to confirm.</h2>
-                <BasicInput className='h-8 p-2 bg-lightblue border-none' onChange={onChange} value={input}/>
+                <BasicInput className='h-8 p-2 bg-light-secondary border-none' onChange={onChange} value={input}/>
                 <button className={`${loading ? 'pointer-events-none' : ''} ${!getDisabled() ? 'bg-red-500 hover:bg-red-600 text-white ' : 'bg-red-800 text-black'} 'px-2 py-1 rounded-md outline-none p-2`} disabled={getDisabled()} onClick={onClickDelete}>Delete</button>
             </div>
         </Modal>

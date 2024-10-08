@@ -18,12 +18,11 @@ module.exports = {
       colors: {
         primary: "#282D4E",
         secondary: "#323A64",
-        darkblue: "#2e3b52",
-        lightblue: "#465b82",
-        tertiary: "#005B41",
-        quaternary: "#008170",
-        quaternaryhover: "#029c87",
-        quaternarydisabled: "#014f45"
+        "light-secondary": '#545C8E',
+        darkblue: "#2a3154",
+        quaternary: "#06d6a0",
+        quaternaryhover: "#5FE5C2",
+        button: "#202540",
       },
     },
   },

@@ -33,7 +33,7 @@ const LinkRealmDropdown:React.FC<LinkRealmDropdownProps> = ({ realms, selectedRe
                 <Menu.Item key={realm.id}>
                     {() => (
                         <div
-                            className={`block px-3 text-sm cursor-pointer text-white bg-darkblue hover:bg-lightblue p-2`}
+                            className={`block px-3 text-sm cursor-pointer text-white bg-darkblue hover:bg-light-secondary p-2`}
                             onClick={() => setSelectedRealm(realm)}
                         >
                             {realm.name}

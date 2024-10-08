@@ -1,5 +1,6 @@
 import AnimatedCharacter from './play/SkinMenu/AnimatedCharacter';
 import Link from 'next/link';
+import BasicButton from '@/components/BasicButton';
 
 export default async function Index() {
 
@@ -13,7 +14,11 @@ export default async function Index() {
                 needed to contribute to your team at Gather. 
             </p>
             <div className='flex flex-row items-center justify-center'>
-                <Link href='/app' className='bg-[#06d6a0] hover:bg-[#5FE5C2] text-[#202540] py-4 px-6 rounded-md font-semibold text-sm'>Get Started</Link>
+                <Link href='/app' >
+                    <BasicButton>
+                        Get Started
+                    </BasicButton>
+                </Link>
             </div>
             <div className='flex flex-row items-center justify-center mt-6'>
                 <div className='relative bottom-4'>
