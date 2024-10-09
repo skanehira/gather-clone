@@ -9,7 +9,7 @@ type LayoutProps = {
 }
 
 const Layout:React.FC<LayoutProps> = ({ children }) => {
-    
+
     return (
         <ModalProvider>
             <ToastContainer theme='colored' pauseOnHover={false}/>

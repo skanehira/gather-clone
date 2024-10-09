@@ -5,7 +5,11 @@ import { RealmData } from '@/utils/pixi/types'
 import PlayNavbar from './PlayNavbar'
 import { useModal } from '../hooks/useModal'
 import signal from '@/utils/signal'
-import IntroScreen from './IntroScreen'
+import dynamic from 'next/dynamic'
+
+const IntroScreen = dynamic(() => import('./IntroScreen'), {
+    ssr: false 
+});
 
 type PlayProps = {
     mapData: RealmData
@@ -61,7 +65,6 @@ const PlayClient:React.FC<PlayProps> = ({ mapData, username, access_token, realm
             </div>}
             {showIntroScreen && <IntroScreen realmName={name} initialSkin={initialSkin} username={username} setShowIntroScreen={setShowIntroScreen}/>}    
         </>
-        
     )
 }
 export default PlayClient
