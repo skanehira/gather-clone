@@ -2,7 +2,13 @@
 import React, { useEffect } from 'react'
 import BasicButton from '@/components/BasicButton'
 import AnimatedCharacter from './SkinMenu/AnimatedCharacter'
-import { useLocalCameraTrack, useLocalMicrophoneTrack, LocalVideoTrack, useRTCClient, useRemoteUsers, useRemoteAudioTracks, useJoin } from 'agora-rtc-react'
+import { 
+    useLocalCameraTrack, 
+    useLocalMicrophoneTrack, 
+    LocalVideoTrack, 
+    useRTCClient, 
+    useJoin,
+} from 'agora-rtc-react'
 import AgoraRTC, { AgoraRTCProvider, usePublish } from 'agora-rtc-react'
 
 type IntroScreenProps = {
@@ -44,26 +50,28 @@ const IntroScreen:React.FC<IntroScreenProps> = ({ realmName, initialSkin, userna
 export default IntroScreen
 
 function LocalVideo() {
-    const { isLoading: isLoadingMic, localMicrophoneTrack } =
-    useLocalMicrophoneTrack()
-    const { isLoading: isLoadingCam, localCameraTrack } = useLocalCameraTrack()
-    const remoteUsers = useRemoteUsers()
-    const { audioTracks } = useRemoteAudioTracks(remoteUsers)
+    const { localCameraTrack } = useLocalCameraTrack()
 
-    usePublish([localMicrophoneTrack, localCameraTrack])
     useJoin({
         appid: process.env.NEXT_PUBLIC_AGORA_APP_ID!,
-        channel: 'fortnite',
+        channel: 'local',
         token: null,
-    });
+    })
 
-    if (isLoadingMic || isLoadingCam) return <div>Loading...</div>
+    useEffect(() => {
+        return () => {
+            localCameraTrack?.close()
+        }
+    }, [localCameraTrack])
 
     return (
-        <LocalVideoTrack 
-            track={localCameraTrack}
-            play={true}
-            className='w-full h-full rounded-xl'
-        />
+        <div className='w-full h-full bg-black grid place-items-center'>
+            <p className='text-white absolute'>Loading...</p>
+            <LocalVideoTrack 
+                track={localCameraTrack}
+                play={true}
+                className='w-full h-full rounded-xl'
+            />
+        </div>
     )
 }
