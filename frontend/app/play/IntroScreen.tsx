@@ -6,9 +6,10 @@ type IntroScreenProps = {
     realmName: string
     initialSkin: string
     username: string
+    setShowIntroScreen: (show: boolean) => void
 }
 
-const IntroScreen:React.FC<IntroScreenProps> = ({ realmName, initialSkin, username }) => {
+const IntroScreen:React.FC<IntroScreenProps> = ({ realmName, initialSkin, username, setShowIntroScreen }) => {
 
     const src = '/sprites/characters/Character_' + initialSkin + '.png'
     
@@ -24,7 +25,7 @@ const IntroScreen:React.FC<IntroScreenProps> = ({ realmName, initialSkin, userna
                         <AnimatedCharacter src={src}/>
                         <p className='relative top-4'>{username}</p>
                     </div>
-                    <BasicButton className='py-0 px-32'>
+                    <BasicButton className='py-0 px-32' onClick={() => setShowIntroScreen(false)}>
                         Join
                     </BasicButton>
                 </div>

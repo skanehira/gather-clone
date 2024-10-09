@@ -59,7 +59,7 @@ const PlayClient:React.FC<PlayProps> = ({ mapData, username, access_token, realm
                 />
                 <PlayNavbar />
             </div>}
-            {showIntroScreen && <IntroScreen realmName={name} initialSkin={initialSkin} username={username}/>}    
+            {showIntroScreen && <IntroScreen realmName={name} initialSkin={initialSkin} username={username} setShowIntroScreen={setShowIntroScreen}/>}    
         </>
         
     )
