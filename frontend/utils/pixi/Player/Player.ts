@@ -157,6 +157,7 @@ export class Player {
     public async init() {
         if (this.initialized) return
         await this.loadAnimations()
+        this.addUsername()
         this.initialized = true
     }
 

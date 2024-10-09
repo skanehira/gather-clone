@@ -1,11 +1,11 @@
 'use client'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import PixiApp from './PixiApp'
 import { RealmData } from '@/utils/pixi/types'
 import PlayNavbar from './PlayNavbar'
 import { useModal } from '../hooks/useModal'
 import signal from '@/utils/signal'
-import ChatLog from './ChatLog'
+import IntroScreen from './IntroScreen'
 
 type PlayProps = {
     mapData: RealmData
@@ -20,6 +20,8 @@ type PlayProps = {
 const PlayClient:React.FC<PlayProps> = ({ mapData, username, access_token, realmId, uid, shareId, initialSkin }) => {
 
     const { setErrorModal, setDisconnectedMessage } = useModal()
+
+    const [showIntroScreen, setShowIntroScreen] = useState(true)
 
     useEffect(() => {
         const onShowKickedModal = (message: string) => { 
@@ -42,19 +44,23 @@ const PlayClient:React.FC<PlayProps> = ({ mapData, username, access_token, realm
     }, [])
 
     return (
-        <div className='relative w-full h-screen flex flex-col-reverse sm:flex-col'>
-            <PixiApp 
-                mapData={mapData} 
-                className='w-full grow sm:h-full sm:flex-grow-0' 
-                username={username} 
-                access_token={access_token} 
-                realmId={realmId} 
-                uid={uid} 
-                shareId={shareId} 
-                initialSkin={initialSkin} 
-            />
-            <PlayNavbar />
-        </div>
+        <>
+            {!showIntroScreen && <div className='relative w-full h-screen flex flex-col-reverse sm:flex-col'>
+                <PixiApp 
+                    mapData={mapData} 
+                    className='w-full grow sm:h-full sm:flex-grow-0' 
+                    username={username} 
+                    access_token={access_token} 
+                    realmId={realmId} 
+                    uid={uid} 
+                    shareId={shareId} 
+                    initialSkin={initialSkin} 
+                />
+                <PlayNavbar />
+            </div>}
+            {showIntroScreen && <IntroScreen />}    
+        </>
+        
     )
 }
 export default PlayClient
