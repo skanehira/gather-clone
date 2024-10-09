@@ -8,7 +8,7 @@ import signal from '../signal'
 import { createClient } from '../supabase/client'
 
 export class PlayApp extends App {
-    private scale: number = 1.75
+    private scale: number = 1.5
     private player: Player
     public blocked: Set<TilePoint> = new Set()
     public keysDown: string[] = []

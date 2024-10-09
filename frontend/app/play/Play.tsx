@@ -54,7 +54,6 @@ const PlayClient:React.FC<PlayProps> = ({ mapData, username, access_token, realm
                 initialSkin={initialSkin} 
             />
             <PlayNavbar />
-            <ChatLog />
         </div>
     )
 }
