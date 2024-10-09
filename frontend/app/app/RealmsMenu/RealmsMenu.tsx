@@ -68,16 +68,16 @@ const RealmsMenu:React.FC<RealmsMenuProps> = ({ realms, errorMessage }) => {
                     }
 
                     return (
-                        <button key={realm.id} className={`w-full h-12 bg-quaternary px-2 hover:bg-quaternaryhover cursor-pointer rounded-md border-4 border-transparent flex flex-row items-center justify-between ${selectedRealm?.id === realm.id ? 'border-white' : ''}`} onClick={selectRealm}>
-                            <p className='text-white text-xl text-left'>{realm.name}</p>
+                        <BasicButton key={realm.id} className={`w-full h-12 border-2 border-transparent flex flex-row items-center justify-between ${selectedRealm?.id === realm.id ? 'border-white' : ''}`} onClick={selectRealm}>
+                            <p className='text-button text-xl text-left'>{realm.name}</p>
                             {playerCounts[index] !== undefined && <div className='rounded-full grid place-items-center w-8 h-8 font-bold bg-green-500'>
                                 {playerCounts[index]}
                             </div>}
-                        </button>
+                        </BasicButton>
                     )
                 })}
                 <div className='fixed bottom-0 w-full bg-primary grid place-items-center p-2'>
-                     <BasicButton className='w-[90%] h-12 text-xl' disabled={selectedRealm === null} onClick={() => router.push(getLink())}>
+                     <BasicButton className='w-[90%] text-xl px-0 py-0' disabled={selectedRealm === null} onClick={() => router.push(getLink())}>
                         Join Realm
                     </BasicButton>
                 </div>
