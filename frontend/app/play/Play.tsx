@@ -15,9 +15,10 @@ type PlayProps = {
     uid: string
     shareId: string
     initialSkin: string
+    name: string
 }
 
-const PlayClient:React.FC<PlayProps> = ({ mapData, username, access_token, realmId, uid, shareId, initialSkin }) => {
+const PlayClient:React.FC<PlayProps> = ({ mapData, username, access_token, realmId, uid, shareId, initialSkin, name }) => {
 
     const { setErrorModal, setDisconnectedMessage } = useModal()
 
@@ -58,7 +59,7 @@ const PlayClient:React.FC<PlayProps> = ({ mapData, username, access_token, realm
                 />
                 <PlayNavbar />
             </div>}
-            {showIntroScreen && <IntroScreen />}    
+            {showIntroScreen && <IntroScreen realmName={name} initialSkin={initialSkin} username={username}/>}    
         </>
         
     )
