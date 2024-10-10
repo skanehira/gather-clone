@@ -38,11 +38,11 @@ export const AgoraVideoChatProvider: React.FC<VideoChatProviderProps> = ({ child
 
 const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children }) => {
 
-    const { localCameraTrack } = useLocalCameraTrack()
-    const { localMicrophoneTrack } = useLocalMicrophoneTrack()
+    const [isCameraEnabled, setIsCameraEnabled] = useState(false)
+    const [isMicrophoneEnabled, setIsMicrophoneEnabled] = useState(false)
 
-    const [isCameraEnabled, setIsCameraEnabled] = useState(true)
-    const [isMicrophoneEnabled, setIsMicrophoneEnabled] = useState(true)
+    const { localCameraTrack } = useLocalCameraTrack(isCameraEnabled)
+    const { localMicrophoneTrack } = useLocalMicrophoneTrack(isMicrophoneEnabled)
 
     useJoin({
         appid: process.env.NEXT_PUBLIC_AGORA_APP_ID!,
@@ -62,12 +62,13 @@ const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children }) => {
         }
     }, [localMicrophoneTrack])
 
-    const toggleCamera = useCallback(async () => {
+    const toggleCamera = useCallback(() => {
+        const enabled = !isCameraEnabled
+        setIsCameraEnabled(enabled)
         if (localCameraTrack) {
-            await localCameraTrack.setEnabled(!localCameraTrack.enabled)
-            setIsCameraEnabled(localCameraTrack.enabled)
+            localCameraTrack.setEnabled(enabled)
         }
-    }, [localCameraTrack])
+    }, [localCameraTrack, isCameraEnabled])
 
     const value: VideoChatContextType = {
         localCameraTrack,
