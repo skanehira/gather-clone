@@ -1,12 +1,11 @@
 'use client'
-import React, { useEffect } from 'react'
+import React from 'react'
 import BasicButton from '@/components/BasicButton'
 import AnimatedCharacter from './SkinMenu/AnimatedCharacter'
 import { 
-    useLocalCameraTrack, 
     LocalVideoTrack, 
-    useJoin,
 } from 'agora-rtc-react'
+import { useVideoChat } from '../hooks/useVideoChat'
 
 type IntroScreenProps = {
     realmName: string
@@ -43,20 +42,8 @@ const IntroScreen:React.FC<IntroScreenProps> = ({ realmName, initialSkin, userna
 export default IntroScreen
 
 function LocalVideo() {
-    const { localCameraTrack } = useLocalCameraTrack()
 
-    useJoin({
-        appid: process.env.NEXT_PUBLIC_AGORA_APP_ID!,
-        channel: 'local',
-        token: null,
-    })
-
-    useEffect(() => {
-        return () => {
-            localCameraTrack?.close()
-        }
-    }, [localCameraTrack])
-
+    const { localCameraTrack } = useVideoChat()
     return (
         <div className='w-full h-full bg-black grid place-items-center'>
             <p className='text-white absolute select-none'>Loading...</p>
