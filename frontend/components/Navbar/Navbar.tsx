@@ -10,6 +10,6 @@ export const Navbar:React.FC = async () => {
     const { data: { user } } = await supabase.auth.getUser()
 
     return (
-        <NavbarChild name={formatEmailToName(user?.user_metadata.email)} avatar_url={user?.user_metadata.picture}/>
+        <NavbarChild name={formatEmailToName(user?.user_metadata.email)} avatar_url={user?.user_metadata.avatar_url}/>
     )
 }

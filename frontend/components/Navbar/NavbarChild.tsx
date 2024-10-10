@@ -13,6 +13,8 @@ export const NavbarChild:React.FC<NavbarChildProps> = ({ name, avatar_url }) => 
 
     const { setModal } = useModal()
 
+    console.log(avatar_url)
+
     return (
         <div className='h-16'>
             <div className='w-full fixed bg-secondary flex flex-row items-center p-2 pl-8 justify-end sm:justify-between z-10'>
@@ -22,7 +24,7 @@ export const NavbarChild:React.FC<NavbarChildProps> = ({ name, avatar_url }) => 
                 </BasicButton>
                 <div className='flex flex-row items-center gap-4 hover:bg-light-secondary rounded-full cursor-pointer py-1 px-1 select-none' onClick={() => setModal('Account Dropdown')}>
                     <p className='text-white'>{name}</p>
-                    <img src={avatar_url} className='aspect-square rounded-full w-12'/>
+                    <img alt='avatar' src={avatar_url} className='aspect-square rounded-full w-12' />
                 </div>
             </div>
         </div> 

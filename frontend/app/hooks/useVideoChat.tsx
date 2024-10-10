@@ -53,15 +53,11 @@ const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children }) => {
 
     useEffect(() => {
         return () => {
+            console.log('unmount')
             localCameraTrack?.close()
-        }
-    }, [localCameraTrack])
-
-    useEffect(() => {
-        return () => {
             localMicrophoneTrack?.close()
         }
-    }, [localMicrophoneTrack])
+    }, [])
 
     const toggleCamera = useCallback(async () => {
         const enabled = !isCameraEnabled
