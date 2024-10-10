@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode, useEffect, useCallback, useState } from 'react'
+import React, { createContext, useContext, ReactNode, useEffect, useCallback, useState, useMemo } from 'react'
 import AgoraRTC, { 
     AgoraRTCProvider, 
     useRTCClient, 
@@ -25,9 +25,11 @@ interface VideoChatProviderProps {
 }
 
 export const AgoraVideoChatProvider: React.FC<VideoChatProviderProps> = ({ children }) => {
-
-    const client = useRTCClient(AgoraRTC.createClient({ codec: "vp8", mode: "rtc" }))
-    AgoraRTC.setLogLevel(4)
+    const client = useMemo(() => {
+        const newClient = AgoraRTC.createClient({ codec: "vp8", mode: "rtc" });
+        AgoraRTC.setLogLevel(4);
+        return newClient;
+    }, []);
 
     return (
         <AgoraRTCProvider client={client}>
@@ -53,8 +55,16 @@ const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children }) => {
     })
 
     useEffect(() => {
-        console.log(localCameraTrack)
+        return () => {
+            localCameraTrack?.close()
+        }
     }, [localCameraTrack])
+
+    useEffect(() => {
+        return () => {
+            localMicrophoneTrack?.close()
+        }
+    }, [localMicrophoneTrack])
 
     const toggleCamera = async () => {
         const enabled = !isCameraEnabled
