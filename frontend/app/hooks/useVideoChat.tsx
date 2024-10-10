@@ -13,6 +13,7 @@ interface VideoChatContextType {
     localCameraTrack: ICameraVideoTrack | null
     localMicrophoneTrack: IMicrophoneAudioTrack | null
     toggleCamera: () => void
+    toggleMicrophone: () => void
     isCameraEnabled: boolean
     isMicrophoneEnabled: boolean
 }
@@ -62,18 +63,27 @@ const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children }) => {
         }
     }, [localMicrophoneTrack])
 
-    const toggleCamera = useCallback(() => {
+    const toggleCamera = useCallback(async () => {
         const enabled = !isCameraEnabled
-        setIsCameraEnabled(enabled)
         if (localCameraTrack) {
-            localCameraTrack.setEnabled(enabled)
+            await localCameraTrack.setEnabled(enabled)
         }
+        setIsCameraEnabled(enabled)
     }, [localCameraTrack, isCameraEnabled])
+
+    const toggleMicrophone = useCallback(async () => {
+        const enabled = !isMicrophoneEnabled
+        if (localMicrophoneTrack) {
+            await localMicrophoneTrack.setEnabled(enabled)
+        }
+        setIsMicrophoneEnabled(enabled)
+    }, [localMicrophoneTrack, isMicrophoneEnabled])
 
     const value: VideoChatContextType = {
         localCameraTrack,
         localMicrophoneTrack,
         toggleCamera,
+        toggleMicrophone,
         isCameraEnabled,
         isMicrophoneEnabled,
     }

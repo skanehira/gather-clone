@@ -47,15 +47,21 @@ export default IntroScreen
 
 function LocalVideo() {
 
-    const { localCameraTrack } = useVideoChat()
+    const { localCameraTrack, isCameraEnabled, isMicrophoneEnabled } = useVideoChat()
     return (
-        <div className='w-full h-full bg-black grid place-items-center'>
-            <p className='text-white absolute select-none'>Loading...</p>
+        <div className='w-full h-full bg-[#111111] grid place-items-center relative'>
             <LocalVideoTrack 
                 track={localCameraTrack}
                 play={true}
                 className='w-full h-full'
             />
+            <div className='absolute select-none text-sm text-white items-center flex flex-col gap-1'>
+                {!isMicrophoneEnabled && !isCameraEnabled && <p>You are muted</p>}
+                {!isCameraEnabled && <p>Your camera is off</p>}
+            </div>
+            {!isMicrophoneEnabled && isCameraEnabled && <p className='absolute bottom-2 right-3 select-none text-sm text-white bg-black bg-opacity-50 p-1 px-2 rounded-full'>
+                You are muted
+            </p>}
         </div>
     )
 }
