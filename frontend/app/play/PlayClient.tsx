@@ -5,9 +5,13 @@ import { RealmData } from '@/utils/pixi/types'
 import PlayNavbar from './PlayNavbar'
 import { useModal } from '../hooks/useModal'
 import signal from '@/utils/signal'
-import { AgoraVideoChatProvider } from '../hooks/useVideoChat'
 import IntroScreen from './IntroScreen'
+import dynamic from 'next/dynamic'
 
+const AgoraVideoChatProvider = dynamic(
+    () => import('../hooks/useVideoChat').then((mod) => mod.AgoraVideoChatProvider),
+    { ssr: false }
+)
 
 type PlayClientProps = {
     mapData: RealmData
