@@ -27,12 +27,13 @@ interface VideoChatProviderProps {
 export const AgoraVideoChatProvider: React.FC<VideoChatProviderProps> = ({ children }) => {
 
     const client = useRTCClient(AgoraRTC.createClient({ codec: "vp8", mode: "rtc" }))
+    AgoraRTC.setLogLevel(4)
 
     return (
         <AgoraRTCProvider client={client}>
-        <VideoChatProvider>
-            {children}
-        </VideoChatProvider>
+            <VideoChatProvider>
+                {children}
+            </VideoChatProvider>
         </AgoraRTCProvider>
     )
 }
@@ -52,28 +53,24 @@ const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children }) => {
     })
 
     useEffect(() => {
-        return () => {
-            console.log('unmount')
-            localCameraTrack?.close()
-            localMicrophoneTrack?.close()
-        }
-    }, [])
+        console.log(localCameraTrack)
+    }, [localCameraTrack])
 
-    const toggleCamera = useCallback(async () => {
+    const toggleCamera = async () => {
         const enabled = !isCameraEnabled
         if (localCameraTrack) {
             await localCameraTrack.setEnabled(enabled)
         }
         setIsCameraEnabled(enabled)
-    }, [localCameraTrack, isCameraEnabled])
+    }
 
-    const toggleMicrophone = useCallback(async () => {
+    const toggleMicrophone = async () => {
         const enabled = !isMicrophoneEnabled
         if (localMicrophoneTrack) {
             await localMicrophoneTrack.setEnabled(enabled)
         }
         setIsMicrophoneEnabled(enabled)
-    }, [localMicrophoneTrack, isMicrophoneEnabled])
+    }
 
     const value: VideoChatContextType = {
         localCameraTrack,

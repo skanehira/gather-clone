@@ -9,7 +9,7 @@ import { AgoraVideoChatProvider } from '../hooks/useVideoChat'
 import IntroScreen from './IntroScreen'
 
 
-type PlayProps = {
+type PlayClientProps = {
     mapData: RealmData
     username: string
     access_token: string
@@ -20,7 +20,7 @@ type PlayProps = {
     name: string
 }
 
-const PlayClient:React.FC<PlayProps> = ({ mapData, username, access_token, realmId, uid, shareId, initialSkin, name }) => {
+const PlayClient:React.FC<PlayClientProps> = ({ mapData, username, access_token, realmId, uid, shareId, initialSkin, name }) => {
 
     const { setErrorModal, setDisconnectedMessage } = useModal()
 

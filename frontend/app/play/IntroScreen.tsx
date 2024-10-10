@@ -46,7 +46,6 @@ const IntroScreen:React.FC<IntroScreenProps> = ({ realmName, initialSkin, userna
 export default IntroScreen
 
 function LocalVideo() {
-
     const { localCameraTrack, isCameraEnabled, isMicrophoneEnabled } = useVideoChat()
     return (
         <div className='w-full h-full bg-[#111111] grid place-items-center relative'>

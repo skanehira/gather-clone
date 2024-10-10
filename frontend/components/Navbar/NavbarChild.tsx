@@ -13,8 +13,6 @@ export const NavbarChild:React.FC<NavbarChildProps> = ({ name, avatar_url }) => 
 
     const { setModal } = useModal()
 
-    console.log(avatar_url)
-
     return (
         <div className='h-16'>
             <div className='w-full fixed bg-secondary flex flex-row items-center p-2 pl-8 justify-end sm:justify-between z-10'>
