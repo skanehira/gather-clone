@@ -76,7 +76,7 @@ const TopBar:React.FC<TopBarProps> = () => {
 
     return (
         <div className='w-full h-[48px] bg-secondary flex flex-row items-center p-2 border-b-2 border-black gap-2 relative'>
-            <div className='hover:bg-light-secondary transition-colors duration-300 ease-in-out aspect-square grid place-items-center rounded-lg p-1'>
+            <div className='hover:bg-light-secondary animate-colors aspect-square grid place-items-center rounded-lg p-1'>
                 <Link href={'/app'}>
                     <ArrowLeftEndOnRectangleIcon className='h-8 w-8 text-white'/>
                 </Link>

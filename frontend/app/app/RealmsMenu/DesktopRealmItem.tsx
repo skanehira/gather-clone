@@ -75,9 +75,9 @@ const DesktopRealmItem:React.FC<DesktopRealmItemProps> = ({ name, id, shareId, s
                 <p>{name}</p>
                 {!shared && (
                     <div className='flex flex-row'>
-                        <LinkIcon className='h-7 w-7 cursor-pointer hover:bg-[#545C8E] rounded-md p-1 transition-colors duration-300 ease-in-out' onClick={copyShareLink}/>
+                        <LinkIcon className='h-7 w-7 cursor-pointer hover:bg-[#545C8E] rounded-md p-1 animate-colors' onClick={copyShareLink}/>
                     <div ref={dotsRef}>
-                        <DotsThreeVertical className='h-7 w-7 cursor-pointer hover:bg-[#545C8E] rounded-md p-1 transition-colors duration-300 ease-in-out' onClick={handleDotsClick}/>
+                        <DotsThreeVertical className='h-7 w-7 cursor-pointer hover:bg-[#545C8E] rounded-md p-1 animate-colors' onClick={handleDotsClick}/>
                     </div>
                 </div>)}
             </div>

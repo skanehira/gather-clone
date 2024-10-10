@@ -68,6 +68,14 @@ input[type=number]::-webkit-outer-spin-button {
     background-image: linear-gradient(#111111, #202437 42%, #323862);
 }
 
+.animate-colors {
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+    transition-duration: 300ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 @keyframes animated {
     from {
         transform: translateX(0);

@@ -17,14 +17,14 @@ const MicAndCameraButtons:React.FC<MicAndCameraButtonsProps> = () => {
         <section className='flex flex-row gap-2'>
             <button 
                 className={`${isMicrophoneEnabled ? 'bg-[#2A4B54] hover:bg-[#3b6975]' : 'bg-[#682E44] hover:bg-[#7a3650]'} 
-                p-2 rounded-full transition-colors duration-300 ease-in-out outline-none`}
+                p-2 rounded-full animate-colors outline-none`}
                 onClick={toggleMicrophone}
             >
                 {!isMicrophoneEnabled ? <MicrophoneSlash className={micClass} /> : <Microphone className={micClass} />}
             </button>
             <button 
                 className={`${isCameraEnabled ? 'bg-[#2A4B54] hover:bg-[#3b6975]' : 'bg-[#682E44] hover:bg-[#7a3650]'} 
-                p-2 rounded-full transition-colors duration-300 ease-in-out outline-none`}
+                p-2 rounded-full animate-colors outline-none`}
                 onClick={toggleCamera}
             >
                 {!isCameraEnabled ? <VideoCameraSlash className={cameraClass} /> : <VideoCamera className={cameraClass} />}

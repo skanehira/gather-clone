@@ -26,7 +26,7 @@ const PlayNavbar:React.FC<PlayNavbarProps> = ({ username, skin }) => {
 
     return (
         <div className='bg-primary w-full h-14 absolute bottom-0 flex flex-row items-center p-2 gap-4'>
-            <Link href='/app' className='aspect-square grid place-items-center rounded-lg p-1 outline-none bg-secondary hover:bg-light-secondary transition-colors duration-300 ease-in-out'>
+            <Link href='/app' className='aspect-square grid place-items-center rounded-lg p-1 outline-none bg-secondary hover:bg-light-secondary animate-colors'>
                 <ArrowLeftEndOnRectangleIcon className='h-8 w-8'/>
             </Link>
             <div className='h-full w-[200px] bg-secondary rounded-lg overflow-hidden flex flex-row'>
@@ -44,7 +44,7 @@ const PlayNavbar:React.FC<PlayNavbarProps> = ({ username, skin }) => {
                 </div>
             </div>
             <MicAndCameraButtons />
-            <button className='aspect-square grid place-items-center rounded-lg p-1 outline-none bg-secondary hover:bg-light-secondary ml-auto transition-colors duration-300 ease-in-out' onClick={onClickSkinButton}>
+            <button className='aspect-square grid place-items-center rounded-lg p-1 outline-none bg-secondary hover:bg-light-secondary ml-auto animate-colors' onClick={onClickSkinButton}>
                 <TShirt className='h-8 w-8'/>
             </button>
         </div>
