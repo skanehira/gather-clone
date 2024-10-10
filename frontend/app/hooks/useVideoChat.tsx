@@ -1,8 +1,20 @@
-import React, { createContext, useContext, ReactNode, useEffect } from 'react'
-import AgoraRTC, { AgoraRTCProvider, useRTCClient, useLocalCameraTrack, useJoin, ICameraVideoTrack } from 'agora-rtc-react'
+import React, { createContext, useContext, ReactNode, useEffect, useCallback, useState } from 'react'
+import AgoraRTC, { 
+    AgoraRTCProvider, 
+    useRTCClient, 
+    useLocalCameraTrack, 
+    useJoin, 
+    ICameraVideoTrack, 
+    useLocalMicrophoneTrack, 
+    IMicrophoneAudioTrack 
+} from 'agora-rtc-react'
 
 interface VideoChatContextType {
     localCameraTrack: ICameraVideoTrack | null
+    localMicrophoneTrack: IMicrophoneAudioTrack | null
+    toggleCamera: () => void
+    isCameraEnabled: boolean
+    isMicrophoneEnabled: boolean
 }
 
 const VideoChatContext = createContext<VideoChatContextType | undefined>(undefined)
@@ -26,7 +38,11 @@ export const AgoraVideoChatProvider: React.FC<VideoChatProviderProps> = ({ child
 
 const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children }) => {
 
-    const { localCameraTrack } = useLocalCameraTrack(false)
+    const { localCameraTrack } = useLocalCameraTrack()
+    const { localMicrophoneTrack } = useLocalMicrophoneTrack()
+
+    const [isCameraEnabled, setIsCameraEnabled] = useState(true)
+    const [isMicrophoneEnabled, setIsMicrophoneEnabled] = useState(true)
 
     useJoin({
         appid: process.env.NEXT_PUBLIC_AGORA_APP_ID!,
@@ -34,15 +50,32 @@ const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children }) => {
         token: null,
     })
 
-    const value: VideoChatContextType = {
-        localCameraTrack,
-    }
-
     useEffect(() => {
         return () => {
             localCameraTrack?.close()
         }
     }, [localCameraTrack])
+
+    useEffect(() => {
+        return () => {
+            localMicrophoneTrack?.close()
+        }
+    }, [localMicrophoneTrack])
+
+    const toggleCamera = useCallback(async () => {
+        if (localCameraTrack) {
+            await localCameraTrack.setEnabled(!localCameraTrack.enabled)
+            setIsCameraEnabled(localCameraTrack.enabled)
+        }
+    }, [localCameraTrack])
+
+    const value: VideoChatContextType = {
+        localCameraTrack,
+        localMicrophoneTrack,
+        toggleCamera,
+        isCameraEnabled,
+        isMicrophoneEnabled,
+    }
 
     return (
         <VideoChatContext.Provider value={value}>
