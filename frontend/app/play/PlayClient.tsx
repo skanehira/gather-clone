@@ -63,7 +63,7 @@ const PlayClient:React.FC<PlayClientProps> = ({ mapData, username, access_token,
                     shareId={shareId} 
                     initialSkin={initialSkin} 
                 />
-                <PlayNavbar />
+                <PlayNavbar username={username} skin={initialSkin}/>
             </div>}
             {showIntroScreen && <IntroScreen realmName={name} initialSkin={initialSkin} username={username} setShowIntroScreen={setShowIntroScreen}/>}    
         </AgoraVideoChatProvider>
