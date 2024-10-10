@@ -5,11 +5,8 @@ import { RealmData } from '@/utils/pixi/types'
 import PlayNavbar from './PlayNavbar'
 import { useModal } from '../hooks/useModal'
 import signal from '@/utils/signal'
-import dynamic from 'next/dynamic'
-
-const IntroScreen = dynamic(() => import('./IntroScreen'), {
-    ssr: false 
-});
+import { VideoChatProvider } from '../hooks/useVideoChat'
+import IntroScreen from './IntroScreen'
 
 type PlayProps = {
     mapData: RealmData
@@ -49,7 +46,7 @@ const PlayClient:React.FC<PlayProps> = ({ mapData, username, access_token, realm
     }, [])
 
     return (
-        <>
+        <VideoChatProvider>
             {!showIntroScreen && <div className='relative w-full h-screen flex flex-col-reverse sm:flex-col'>
                 <PixiApp 
                     mapData={mapData} 
@@ -64,7 +61,7 @@ const PlayClient:React.FC<PlayProps> = ({ mapData, username, access_token, realm
                 <PlayNavbar />
             </div>}
             {showIntroScreen && <IntroScreen realmName={name} initialSkin={initialSkin} username={username} setShowIntroScreen={setShowIntroScreen}/>}    
-        </>
+        </VideoChatProvider>
     )
 }
 export default PlayClient
