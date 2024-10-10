@@ -24,8 +24,6 @@ const PlayNavbar:React.FC<PlayNavbarProps> = ({ username, skin }) => {
         signal.emit('requestSkin')
     }
 
-    console.log(username)
-
     return (
         <div className='bg-primary w-full h-14 absolute bottom-0 flex flex-row items-center p-2 gap-4'>
             <Link href='/app' className='aspect-square grid place-items-center rounded-lg p-1 outline-none bg-secondary hover:bg-light-secondary transition-colors duration-300 ease-in-out'>
