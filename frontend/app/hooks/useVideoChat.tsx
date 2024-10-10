@@ -26,7 +26,7 @@ export const AgoraVideoChatProvider: React.FC<VideoChatProviderProps> = ({ child
 
 const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children }) => {
 
-    const { localCameraTrack } = useLocalCameraTrack()
+    const { localCameraTrack } = useLocalCameraTrack(false)
 
     useJoin({
         appid: process.env.NEXT_PUBLIC_AGORA_APP_ID!,

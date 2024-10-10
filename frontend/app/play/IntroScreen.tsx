@@ -6,6 +6,7 @@ import {
     LocalVideoTrack, 
 } from 'agora-rtc-react'
 import { useVideoChat } from '../hooks/useVideoChat'
+import MicAndCameraButtons from '@/components/VideoChat/MicAndCameraButtons'
 
 type IntroScreenProps = {
     realmName: string
@@ -22,8 +23,11 @@ const IntroScreen:React.FC<IntroScreenProps> = ({ realmName, initialSkin, userna
         <main className='dark-gradient w-full h-screen flex flex-col items-center pt-28'>
             <h1 className='text-4xl font-semibold'>Welcome to <span className='text-[#CAD8FF]'>{realmName}</span></h1>
             <section className='flex flex-row mt-32 items-center gap-24'>
-                <div className='aspect-video w-[337px] h-[227px] bg-black rounded-xl border-2 border-[#3F4776] overflow-hidden'>
-                    <LocalVideo/>
+                <div className='flex flex-col items-center gap-4'>
+                    <div className='aspect-video w-[337px] h-[227px] bg-black rounded-xl border-2 border-[#3F4776] overflow-hidden'>
+                        <LocalVideo/>
+                    </div>
+                    <MicAndCameraButtons/>
                 </div>
                 <div className='flex flex-col items-center gap-4'>
                     <div className='flex flex-row items-center'>
