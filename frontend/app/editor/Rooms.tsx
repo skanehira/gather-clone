@@ -84,7 +84,7 @@ const Rooms:React.FC<RoomsProps> = ({ rooms, setRooms, roomIndex, setRoomIndex }
                 </div>
                 <BasicButton className='flex flex-row items-center gap-1 text-lg mb-4 w-full justify-center' onClick={onClickCreateRoom}>
                     Create Room
-                    <PlusCircleIcon className='h-5 cursor-pointer hover:bg-darkblue'/>
+                    <PlusCircleIcon className='h-5 cursor-pointer hover:bg-darkblue transition-colors duration-300 ease-in-out'/>
                 </BasicButton>
         </div>
     )

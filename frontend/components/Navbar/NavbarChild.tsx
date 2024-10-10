@@ -20,7 +20,7 @@ export const NavbarChild:React.FC<NavbarChildProps> = ({ name, avatar_url }) => 
                     Create Space
                     <PlusCircleIcon className='h-5'/>
                 </BasicButton>
-                <div className='flex flex-row items-center gap-4 hover:bg-light-secondary rounded-full cursor-pointer py-1 px-1 select-none' onClick={() => setModal('Account Dropdown')}>
+                <div className='flex flex-row items-center gap-4 hover:bg-light-secondary transition-colors duration-300 ease-in-out rounded-full cursor-pointer py-1 px-1 select-none' onClick={() => setModal('Account Dropdown')}>
                     <p className='text-white'>{name}</p>
                     <img alt='avatar' src={avatar_url} className='aspect-square rounded-full w-12' />
                 </div>

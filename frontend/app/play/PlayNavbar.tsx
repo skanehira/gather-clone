@@ -30,7 +30,7 @@ const PlayNavbar:React.FC<PlayNavbarProps> = ({ username, skin }) => {
                 <ArrowLeftEndOnRectangleIcon className='h-8 w-8'/>
             </Link>
             <div className='h-full w-[200px] bg-secondary rounded-lg overflow-hidden flex flex-row'>
-                <div className='w-[60px] h-full border-r-[1px] border-gray relative grid place-items-center'>
+                <div className='w-[60px] h-full border-r-[1px] border-light-gray relative grid place-items-center'>
                     <AnimatedCharacter src={'/sprites/characters/Character_' + skin + '.png'} noAnimation className='w-8 h-8 absolute bottom-1' />
                     {isCameraEnabled && <LocalVideoTrack 
                         track={localCameraTrack}

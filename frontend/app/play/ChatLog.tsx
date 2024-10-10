@@ -78,7 +78,7 @@ const ChatLog: React.FC<ChatLogProps> = () => {
         <div className='absolute top-0 left-0 hidden sm:flex'>
             {!expanded && (
                 <div
-                    className='bg-secondary hover:bg-light-secondary p-2 grid place-items-center rounded-br-lg cursor-pointer'
+                    className='bg-secondary hover:bg-light-secondary transition-colors duration-300 ease-in-out p-2 grid place-items-center rounded-br-lg cursor-pointer'
                     onClick={expand}
                 >
                     <Chat className='h-7 w-7' />
@@ -86,7 +86,7 @@ const ChatLog: React.FC<ChatLogProps> = () => {
             )}
             {expanded && (
                 <div className='bg-secondary bg-opacity-80 w-[500px] h-[200px] rounded-br-lg transparent-scrollbar relative p-1'>
-                    <div className='cursor-pointer absolute bottom-0 right-0 rounded-tl-lg rounded-br-lg bg-darkblue hover:bg-light-secondary bg-opacity-80 p-2' onClick={collapse}>
+                    <div className='cursor-pointer absolute bottom-0 right-0 rounded-tl-lg rounded-br-lg bg-darkblue hover:bg-light-secondary transition-colors duration-300 ease-in-out bg-opacity-80 p-2' onClick={collapse}>
                         <ArrowUpLeft className='h-4 w-4' />
                     </div>
                     <div className='w-full h-full flex flex-col-reverse overflow-y-scroll p-2 pr-4'>

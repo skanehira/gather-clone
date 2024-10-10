@@ -17,7 +17,7 @@ const DisconnectedModal:React.FC<DisconnectedModalProps> = () => {
                 <h1 className='text-red-500'>You have been disconnected.</h1>
                 <h1 className='text-red-500 text-center'>{disconnectedMessage}</h1>
                 <Link href='/app'>
-                    <button className='bg-secondary border-2 border-white hover:bg-light-secondary text-white px-2 py-1 rounded-md outline-none'>Home</button>
+                    <button className='bg-secondary border-2 border-white hover:bg-light-secondary transition-colors duration-300 ease-in-out text-white px-2 py-1 rounded-md outline-none'>Home</button>
                 </Link>
             </div>
         </Modal>

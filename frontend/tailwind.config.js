@@ -23,7 +23,7 @@ module.exports = {
         quaternary: "#06d6a0",
         quaternaryhover: "#5FE5C2",
         button: "#202540",
-        gray: "#464B67",
+        'light-gray': "#464B67",
       },
     },
   },
