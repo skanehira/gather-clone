@@ -10,14 +10,14 @@ import MicAndCameraButtons from '@/components/VideoChat/MicAndCameraButtons'
 
 type IntroScreenProps = {
     realmName: string
-    initialSkin: string
+    skin: string
     username: string
     setShowIntroScreen: (show: boolean) => void
 }
 
-const IntroScreen:React.FC<IntroScreenProps> = ({ realmName, initialSkin, username, setShowIntroScreen }) => {
+const IntroScreen:React.FC<IntroScreenProps> = ({ realmName, skin, username, setShowIntroScreen }) => {
 
-    const src = '/sprites/characters/Character_' + initialSkin + '.png'
+    const src = '/sprites/characters/Character_' + skin + '.png'
 
     return (
         <main className='dark-gradient w-full h-screen flex flex-col items-center pt-28'>

@@ -30,6 +30,8 @@ const PlayClient:React.FC<PlayClientProps> = ({ mapData, username, access_token,
 
     const [showIntroScreen, setShowIntroScreen] = useState(true)
 
+    const [skin, setSkin] = useState(initialSkin)
+
     useEffect(() => {
         const onShowKickedModal = (message: string) => { 
             setErrorModal('Disconnected')
@@ -41,12 +43,18 @@ const PlayClient:React.FC<PlayClientProps> = ({ mapData, username, access_token,
             setDisconnectedMessage('You have been disconnected from the server.')
         }
 
+        const onSwitchSkin = (skin: string) => {
+            setSkin(skin)
+        }
+
         signal.on('showKickedModal', onShowKickedModal)
         signal.on('showDisconnectModal', onShowDisconnectModal)
+        signal.on('switchSkin', onSwitchSkin)
 
         return () => {
             signal.off('showKickedModal', onShowDisconnectModal)
             signal.off('showDisconnectModal', onShowDisconnectModal)
+            signal.off('switchSkin', onSwitchSkin)
         }
     }, [])
 
@@ -61,11 +69,11 @@ const PlayClient:React.FC<PlayClientProps> = ({ mapData, username, access_token,
                     realmId={realmId} 
                     uid={uid} 
                     shareId={shareId} 
-                    initialSkin={initialSkin} 
+                    initialSkin={skin} 
                 />
-                <PlayNavbar username={username} skin={initialSkin}/>
+                <PlayNavbar username={username} skin={skin}/>
             </div>}
-            {showIntroScreen && <IntroScreen realmName={name} initialSkin={initialSkin} username={username} setShowIntroScreen={setShowIntroScreen}/>}    
+            {showIntroScreen && <IntroScreen realmName={name} skin={skin} username={username} setShowIntroScreen={setShowIntroScreen}/>}    
         </AgoraVideoChatProvider>
     )
 }
