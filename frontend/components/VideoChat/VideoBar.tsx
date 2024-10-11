@@ -13,11 +13,14 @@ const VideoBar:React.FC<VideoBarProps> = () => {
     return (
         <main className='absolute z-10 w-full flex flex-col items-center pt-2 top-0'>
             <section className='flex flex-row items-center gap-4'>
-                {remoteUsers.map((user) => (
-                    <div key={user.uid} className='w-[233px] h-[130px] bg-secondary rounded-lg overflow-hidden'>
-                        <RemoteUser user={user} />
-                    </div>
-                ))}
+                {remoteUsers.map((user) => {
+                    if (user.videoTrack?.isPlaying === false) return null
+                    return (
+                        <div key={user.uid} className='w-[233px] h-[130px] bg-secondary rounded-lg overflow-hidden'>
+                            <RemoteUser user={user} />
+                        </div>
+                    )
+                })}
             </section>
         </main>
     )
