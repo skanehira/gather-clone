@@ -63,6 +63,7 @@ const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children, uid, cl
     const remoteUsers = useRemoteUsers()
     const { audioTracks } = useRemoteAudioTracks(remoteUsers)
     const hasJoined = useRef(false)
+    const currentChannel = useRef(uid)
     audioTracks.map((track) => track.play())
     usePublish([localCameraTrack, localMicrophoneTrack])
 
@@ -88,12 +89,17 @@ const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children, uid, cl
 
     useEffect(() => {
         const onJoinChannel = async (channel: string) => {
+            const localChannel = uid
+            if (channel === 'local' && currentChannel.current === localChannel) return
+            if (channel === currentChannel.current) return
+
             await client.leave()
 
-            const localChannel = uid
             if (channel === 'local') {
+                currentChannel.current = localChannel
                 await client.join(process.env.NEXT_PUBLIC_AGORA_APP_ID!, localChannel, null)
             } else {
+                currentChannel.current = channel
                 await client.join(process.env.NEXT_PUBLIC_AGORA_APP_ID!, channel, null)
             }
         }
