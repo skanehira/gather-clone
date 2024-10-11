@@ -38,7 +38,7 @@ const PlayNavbar:React.FC<PlayNavbarProps> = ({ username, skin }) => {
                         className='w-full h-full absolute'
                     />}
                 </div>
-                <div className='w-full flex flex-col p-1'>
+                <div className='w-full flex flex-col p-1 pl-2'>
                     <p className='text-white text-xs'>{username}</p>
                     <p className='text-[#BDBDBD] text-xs'>Available</p>
                 </div>
