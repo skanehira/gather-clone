@@ -5,7 +5,11 @@ import AgoraRTC, {
     useJoin, 
     ICameraVideoTrack, 
     useLocalMicrophoneTrack, 
-    IMicrophoneAudioTrack 
+    IMicrophoneAudioTrack,
+    usePublish,
+    useRemoteUsers,
+    useRemoteAudioTracks,
+    IAgoraRTCRemoteUser,
 } from 'agora-rtc-react'
 
 interface VideoChatContextType {
@@ -15,6 +19,7 @@ interface VideoChatContextType {
     toggleMicrophone: () => void
     isCameraEnabled: boolean
     isMicrophoneEnabled: boolean
+    remoteUsers: IAgoraRTCRemoteUser[]
 }
 
 const VideoChatContext = createContext<VideoChatContextType | undefined>(undefined)
@@ -43,10 +48,15 @@ const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children }) => {
 
     const [isCameraEnabled, setIsCameraEnabled] = useState(false)
     const [isMicrophoneEnabled, setIsMicrophoneEnabled] = useState(false)
-
+    
     const { localCameraTrack } = useLocalCameraTrack(isCameraEnabled)
     const { localMicrophoneTrack } = useLocalMicrophoneTrack(isMicrophoneEnabled)
 
+    const remoteUsers = useRemoteUsers()
+    const { audioTracks } = useRemoteAudioTracks(remoteUsers)
+
+    audioTracks.map((track) => track.play())
+    usePublish([localCameraTrack, localMicrophoneTrack])
     useJoin({
         appid: process.env.NEXT_PUBLIC_AGORA_APP_ID!,
         channel: 'local',
@@ -88,6 +98,7 @@ const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children }) => {
         toggleMicrophone,
         isCameraEnabled,
         isMicrophoneEnabled,
+        remoteUsers,
     }
 
     return (

@@ -7,6 +7,7 @@ import { useModal } from '../hooks/useModal'
 import signal from '@/utils/signal'
 import IntroScreen from './IntroScreen'
 import dynamic from 'next/dynamic'
+import VideoBar from '@/components/VideoChat/VideoBar'
 
 const AgoraVideoChatProvider = dynamic(
     () => import('../hooks/useVideoChat').then((mod) => mod.AgoraVideoChatProvider),
@@ -61,6 +62,7 @@ const PlayClient:React.FC<PlayClientProps> = ({ mapData, username, access_token,
     return (
         <AgoraVideoChatProvider>
             {!showIntroScreen && <div className='relative w-full h-screen flex flex-col-reverse sm:flex-col'>
+                <VideoBar />
                 <PixiApp 
                     mapData={mapData} 
                     className='w-full grow sm:h-full sm:flex-grow-0' 
