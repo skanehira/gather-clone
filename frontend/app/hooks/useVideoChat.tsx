@@ -1,8 +1,7 @@
-import React, { createContext, useContext, ReactNode, useEffect, useState, useMemo } from 'react'
+import React, { createContext, useContext, ReactNode, useEffect, useState, useMemo, useRef } from 'react'
 import AgoraRTC, { 
     AgoraRTCProvider, 
     useLocalCameraTrack, 
-    useJoin, 
     ICameraVideoTrack, 
     useLocalMicrophoneTrack, 
     IMicrophoneAudioTrack,
@@ -10,6 +9,7 @@ import AgoraRTC, {
     useRemoteUsers,
     useRemoteAudioTracks,
     IAgoraRTCRemoteUser,
+    IAgoraRTCClient,
 } from 'agora-rtc-react'
 import signal from '../../utils/signal'
 
@@ -25,12 +25,19 @@ interface VideoChatContextType {
 
 const VideoChatContext = createContext<VideoChatContextType | undefined>(undefined)
 
+
+interface AgoraVideoChatProviderProps {
+    children: ReactNode
+    uid: string
+}
+
 interface VideoChatProviderProps {
   children: ReactNode
   uid: string
+  client: IAgoraRTCClient
 }
 
-export const AgoraVideoChatProvider: React.FC<VideoChatProviderProps> = ({ children, uid }) => {
+export const AgoraVideoChatProvider: React.FC<AgoraVideoChatProviderProps> = ({ children, uid }) => {
     const client = useMemo(() => {
         const newClient = AgoraRTC.createClient({ codec: "vp8", mode: "rtc" })
         AgoraRTC.setLogLevel(4)
@@ -39,14 +46,14 @@ export const AgoraVideoChatProvider: React.FC<VideoChatProviderProps> = ({ child
 
     return (
         <AgoraRTCProvider client={client}>
-            <VideoChatProvider uid={uid}>
+            <VideoChatProvider uid={uid} client={client}>
                 {children}
             </VideoChatProvider>
         </AgoraRTCProvider>
     )
 }
 
-const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children, uid }) => {
+const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children, uid, client }) => {
     const [isCameraEnabled, setIsCameraEnabled] = useState(false)
     const [isMicrophoneEnabled, setIsMicrophoneEnabled] = useState(false)
     
@@ -55,14 +62,9 @@ const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children, uid }) 
 
     const remoteUsers = useRemoteUsers()
     const { audioTracks } = useRemoteAudioTracks(remoteUsers)
-
+    const hasJoined = useRef(false)
     audioTracks.map((track) => track.play())
     usePublish([localCameraTrack, localMicrophoneTrack])
-    useJoin({
-        appid: process.env.NEXT_PUBLIC_AGORA_APP_ID!,
-        channel: uid,
-        token: null,
-    })
 
     useEffect(() => {
         return () => {
@@ -77,8 +79,23 @@ const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children, uid }) 
     }, [localMicrophoneTrack])
 
     useEffect(() => {
-        const onJoinChannel = (channel: string) => {
-            console.log(channel)
+        if (!hasJoined.current) {
+            console.log('joining channel')
+            client.join(process.env.NEXT_PUBLIC_AGORA_APP_ID!, uid, null)
+            hasJoined.current = true
+        }
+    }, [])
+
+    useEffect(() => {
+        const onJoinChannel = async (channel: string) => {
+            await client.leave()
+
+            const localChannel = uid
+            if (channel === 'local') {
+                await client.join(process.env.NEXT_PUBLIC_AGORA_APP_ID!, localChannel, null)
+            } else {
+                await client.join(process.env.NEXT_PUBLIC_AGORA_APP_ID!, channel, null)
+            }
         }
 
         signal.on('joinChannel', onJoinChannel)

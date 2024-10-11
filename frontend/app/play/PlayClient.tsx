@@ -6,13 +6,8 @@ import PlayNavbar from './PlayNavbar'
 import { useModal } from '../hooks/useModal'
 import signal from '@/utils/signal'
 import IntroScreen from './IntroScreen'
-import dynamic from 'next/dynamic'
 import VideoBar from '@/components/VideoChat/VideoBar'
-
-const AgoraVideoChatProvider = dynamic(
-    () => import('../hooks/useVideoChat').then((mod) => mod.AgoraVideoChatProvider),
-    { ssr: false }
-)
+import { AgoraVideoChatProvider } from '../hooks/useVideoChat'
 
 type PlayClientProps = {
     mapData: RealmData
