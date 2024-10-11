@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode, useEffect, useCallback, useState, useMemo } from 'react'
+import React, { createContext, useContext, ReactNode, useEffect, useState, useMemo } from 'react'
 import AgoraRTC, { 
     AgoraRTCProvider, 
     useLocalCameraTrack, 
@@ -26,9 +26,10 @@ const VideoChatContext = createContext<VideoChatContextType | undefined>(undefin
 
 interface VideoChatProviderProps {
   children: ReactNode
+  uid: string
 }
 
-export const AgoraVideoChatProvider: React.FC<VideoChatProviderProps> = ({ children }) => {
+export const AgoraVideoChatProvider: React.FC<VideoChatProviderProps> = ({ children, uid }) => {
     const client = useMemo(() => {
         const newClient = AgoraRTC.createClient({ codec: "vp8", mode: "rtc" })
         AgoraRTC.setLogLevel(4)
@@ -37,15 +38,14 @@ export const AgoraVideoChatProvider: React.FC<VideoChatProviderProps> = ({ child
 
     return (
         <AgoraRTCProvider client={client}>
-            <VideoChatProvider>
+            <VideoChatProvider uid={uid}>
                 {children}
             </VideoChatProvider>
         </AgoraRTCProvider>
     )
 }
 
-const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children }) => {
-
+const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children, uid }) => {
     const [isCameraEnabled, setIsCameraEnabled] = useState(false)
     const [isMicrophoneEnabled, setIsMicrophoneEnabled] = useState(false)
     
@@ -59,7 +59,7 @@ const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children }) => {
     usePublish([localCameraTrack, localMicrophoneTrack])
     useJoin({
         appid: process.env.NEXT_PUBLIC_AGORA_APP_ID!,
-        channel: 'local',
+        channel: uid,
         token: null,
     })
 

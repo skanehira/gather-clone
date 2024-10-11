@@ -60,7 +60,7 @@ const PlayClient:React.FC<PlayClientProps> = ({ mapData, username, access_token,
     }, [])
 
     return (
-        <AgoraVideoChatProvider>
+        <AgoraVideoChatProvider uid={uid}>
             {!showIntroScreen && <div className='relative w-full h-screen flex flex-col-reverse sm:flex-col'>
                 <VideoBar />
                 <PixiApp 
