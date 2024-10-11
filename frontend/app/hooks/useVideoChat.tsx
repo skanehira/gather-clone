@@ -11,6 +11,7 @@ import AgoraRTC, {
     useRemoteAudioTracks,
     IAgoraRTCRemoteUser,
 } from 'agora-rtc-react'
+import signal from '../../utils/signal'
 
 interface VideoChatContextType {
     localCameraTrack: ICameraVideoTrack | null
@@ -74,6 +75,18 @@ const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children, uid }) 
             localMicrophoneTrack?.close()
         }
     }, [localMicrophoneTrack])
+
+    useEffect(() => {
+        const onJoinChannel = (channel: string) => {
+            console.log(channel)
+        }
+
+        signal.on('joinChannel', onJoinChannel)
+
+        return () => {
+            signal.off('joinChannel', onJoinChannel)
+        }
+    }, [])
 
     const toggleCamera = async () => {
         const enabled = !isCameraEnabled

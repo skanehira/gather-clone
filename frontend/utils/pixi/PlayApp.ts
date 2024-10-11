@@ -9,14 +9,14 @@ import { createClient } from '../supabase/client'
 
 export class PlayApp extends App {
     private scale: number = 1.5
-    private player: Player
+    public player: Player
     public blocked: Set<TilePoint> = new Set()
     public keysDown: string[] = []
     private teleportLocation: Point | null = null
     private fadeOverlay: PIXI.Graphics = new PIXI.Graphics()
     private fadeDuration: number = 0.5
     private uid: string = ''
-    private players: { [key: string]: Player } = {}
+    public players: { [key: string]: Player } = {}
     private disableInput: boolean = false
 
     private kicked: boolean = false

@@ -246,6 +246,8 @@ export class Player {
                     const teleported = this.teleportIfOnTeleporter('mouse')
                     if (teleported) return
                 }
+
+                this.checkIfShouldJoinChannel(newTilePosition)
             }
         } else {
             const angle = Math.atan2(dy, dx)
@@ -275,6 +277,38 @@ export class Player {
         if (this.isLocal) {
             this.playApp.moveCameraToPlayer()
         }
+    }
+
+    private checkIfShouldJoinChannel = (newTilePosition: Point) => {
+        const adjacentTiles = [
+            newTilePosition,
+            { x: newTilePosition.x - 1, y: newTilePosition.y },
+            { x: newTilePosition.x + 1, y: newTilePosition.y },
+            { x: newTilePosition.x, y: newTilePosition.y - 1 },
+            { x: newTilePosition.x, y: newTilePosition.y + 1 }
+        ]
+
+        if (this.isLocal) {
+            for (const tile of adjacentTiles) {
+                // iterate through all players
+                for (const player of Object.values(this.playApp.players)) {
+                    if (player.currentTilePosition.x === tile.x && player.currentTilePosition.y === tile.y) {
+                        signal.emit('joinChannel', 'group')
+                        return
+                    }
+                }
+            }
+        } else {
+            for (const tile of adjacentTiles) {
+                // if the tile is the playApp.player position
+                if (this.playApp.player.currentTilePosition.x === tile.x && this.playApp.player.currentTilePosition.y === tile.y) {
+                    signal.emit('joinChannel', 'group')
+                    return
+                }
+            }
+        }
+
+        signal.emit('joinChannel', 'local')
     }
 
     private stop = () => {
