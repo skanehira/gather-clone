@@ -1,4 +1,4 @@
-import { DotsThreeVertical, Link as LinkIcon } from '@phosphor-icons/react'
+import { DotsThreeVertical, Link as LinkIcon, SignIn } from '@phosphor-icons/react'
 import React, { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useModal } from '@/app/hooks/useModal'
@@ -59,15 +59,31 @@ const DesktopRealmItem:React.FC<DesktopRealmItemProps> = ({ name, id, shareId, s
     return (
         <div className='relative select-none'>
             <Link href={getLink()}>
-                <div className='w-full aspect-video relative'>
-                    {playerCount !== undefined && playerCount !== null && (
-                        <div className='absolute top-2 left-2 rounded-full px-2 py-1 flex flex-row bg-black bg-opacity-80 gap-2 items-center max-w-max'>
-                            <div className='bg-green-500 w-3 h-3 rounded-full'/>
+                <div className='w-full aspect-video relative rounded-3xl border-4 border-transparent hover:border-light-secondary overflow-hidden'>
+                    {/* Background pulse animation */}
+                    <div className='animate-pulse bg-secondary absolute inset-0' />
+                    
+                    {/* Thumbnail image */}
+                    <img 
+                        src='/thumbnail.png' 
+                        className='absolute z-10' 
+                        style={{imageRendering: 'pixelated'}} 
+                    />
+                    
+                    {/* Hover effect and sign-in icon */}
+                    <div className='absolute inset-0 grid place-items-center z-20 opacity-0 hover:opacity-100 transition-opacity duration-300'>
+                        <div className='rounded-full bg-black bg-opacity-70 grid place-items-center absolute p-2'>
+                            <SignIn className='w-8 h-8' />
+                        </div>
+                    </div>
+                    
+                    {/* Player count indicator */}
+                    {playerCount != null && (
+                        <div className='pointer-events-none absolute top-2 left-2 rounded-full px-2 py-1 flex items-center gap-2 bg-black bg-opacity-80 max-w-max z-30'>
+                            <div className='bg-green-500 w-3 h-3 rounded-full' />
                             <p className='text-sm'>{playerCount}</p>
                         </div>
                     )}
-                    <img src='/thumbnail.png' style={{imageRendering: 'pixelated'}} className='rounded-3xl border-4 border-primary hover:border-light-secondary absolute z-10'/>
-                    <div className='animate-pulse bg-secondary absolute inset-0 rounded-3xl'/>
                 </div>
             </Link>
             <div className='mt-2 flex flex-row justify-between'>
