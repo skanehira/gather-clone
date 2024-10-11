@@ -59,25 +59,24 @@ const DesktopRealmItem:React.FC<DesktopRealmItemProps> = ({ name, id, shareId, s
     return (
         <div className='relative select-none'>
             <Link href={getLink()}>
-                <div className='w-full aspect-video rounded-3xl overflow-hidden relative'>
+                <div className='w-full aspect-video relative'>
                     {playerCount !== undefined && playerCount !== null && (
                         <div className='absolute top-2 left-2 rounded-full px-2 py-1 flex flex-row bg-black bg-opacity-80 gap-2 items-center max-w-max'>
                             <div className='bg-green-500 w-3 h-3 rounded-full'/>
                             <p className='text-sm'>{playerCount}</p>
                         </div>
                     )}
-                    <div className='w-full h-full bg-black opacity-0 absolute hover:opacity-25'/>
-                    <img src='/thumbnail.png' style={{imageRendering: 'pixelated'}}/>
-                    <div className='animate-pulse w-full h-full bg-secondary absolute'/>
+                    <img src='/thumbnail.png' style={{imageRendering: 'pixelated'}} className='rounded-3xl border-4 border-primary hover:border-light-secondary absolute z-10'/>
+                    <div className='animate-pulse bg-secondary absolute inset-0 rounded-3xl'/>
                 </div>
             </Link>
-            <div className='mt-1 flex flex-row justify-between'>
-                <p>{name}</p>
+            <div className='mt-2 flex flex-row justify-between'>
+                <p className='text-sm font-semibold'>{name}</p>
                 {!shared && (
                     <div className='flex flex-row'>
                         <LinkIcon className='h-7 w-7 cursor-pointer hover:bg-[#545C8E] rounded-md p-1 animate-colors' onClick={copyShareLink}/>
                     <div ref={dotsRef}>
-                        <DotsThreeVertical className='h-7 w-7 cursor-pointer hover:bg-[#545C8E] rounded-md p-1 animate-colors' onClick={handleDotsClick}/>
+                        <DotsThreeVertical weight='bold' className='h-7 w-7 cursor-pointer hover:bg-[#545C8E] rounded-md p-1 animate-colors' onClick={handleDotsClick}/>
                     </div>
                 </div>)}
             </div>

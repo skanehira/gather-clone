@@ -86,7 +86,7 @@ const RealmsMenu:React.FC<RealmsMenuProps> = ({ realms, errorMessage }) => {
             {/* Desktop View */}
             <div className='flex-col items-center w-full p-8 hidden sm:flex'>
                 {realms.length === 0 && <p className='text-center'>You have no spaces you can join. Create a space to get started!</p>}
-                <div className='hidden sm:grid grid-cols-2 lg:grid-cols-4 md:grid-cols-3 gap-8 w-full'>
+                <div className='hidden sm:grid grid-cols-2 md:grid-cols-3 gap-8 w-full'>
                     {realms.map((realm, index) => {
                         return (
                             <DesktopRealmItem key={realm.id} name={realm.name} id={realm.id} shareId={realm.share_id} shared={realm.shared} playerCount={playerCounts[index]}/>
