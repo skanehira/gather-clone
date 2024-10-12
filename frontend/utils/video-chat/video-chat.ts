@@ -16,10 +16,8 @@ export class VideoChat {
         this.client.on('user-left', this.onUserLeft)
     }
 
-    public async onUserJoined(user: IAgoraRTCRemoteUser, mediaType: "audio" | "video" | "datachannel", config?: IDataChannelConfig) {
+    public onUserJoined = async (user: IAgoraRTCRemoteUser, mediaType: "audio" | "video" | "datachannel", config?: IDataChannelConfig) => {
         this.remoteUsers[user.uid] = user
-        console.log('USER JOINED')
-        console.log(this.client)
         await this.client.subscribe(user, mediaType)
         
         if (this.userListUpdateHandler) {
@@ -28,11 +26,10 @@ export class VideoChat {
     }
 
     public setUserListUpdateHandler(handler: (users: IAgoraRTCRemoteUser[]) => void) {
-        console.log('running')
         this.userListUpdateHandler = handler
     }
 
-    public onUserLeft(user: IAgoraRTCRemoteUser, reason: string) {
+    public onUserLeft = (user: IAgoraRTCRemoteUser, reason: string) => {
         delete this.remoteUsers[user.uid]
         
         if (this.userListUpdateHandler) {
@@ -75,11 +72,19 @@ export class VideoChat {
         }
     }
 
+    private resetRemoteUsers() {
+        this.remoteUsers = {}
+        if (this.userListUpdateHandler) {
+            this.userListUpdateHandler([])
+        }
+    }
+
     public async joinChannel(channel: string) {
         if (channel === this.currentChannel) return
         if (this.client.connectionState === 'CONNECTED') {
             await this.client.leave()
         }
+        this.resetRemoteUsers()
 
         await this.client.join(process.env.NEXT_PUBLIC_AGORA_APP_ID!, channel, null)
         this.currentChannel = channel
@@ -99,6 +104,7 @@ export class VideoChat {
             await this.client.leave()
             this.currentChannel = ''
         }
+        this.resetRemoteUsers()
     }
 
     public destroy() {

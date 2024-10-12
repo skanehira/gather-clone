@@ -71,7 +71,7 @@ const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children }) => {
 
     useEffect(() => {
         videoChat.setUserListUpdateHandler(setRemoteUsers)
-    }, [setRemoteUsers, remoteUsers])
+    }, [setRemoteUsers])
 
     const toggleCamera = async () => {
         const muted = await videoChat.toggleCamera()
