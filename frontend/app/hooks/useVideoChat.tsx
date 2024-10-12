@@ -62,10 +62,13 @@ const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children, uid, cl
 
     const remoteUsers = useRemoteUsers()
     const { audioTracks } = useRemoteAudioTracks(remoteUsers)
-    const hasJoined = useRef(false)
-    const currentChannel = useRef(uid)
+
     audioTracks.map((track) => track.play())
     usePublish([localCameraTrack, localMicrophoneTrack])
+
+    const hasJoined = useRef(false)
+    const currentChannel = useRef(uid)
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
     useEffect(() => {
         return () => {
@@ -80,28 +83,38 @@ const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children, uid, cl
     }, [localMicrophoneTrack])
 
     useEffect(() => {
+
         if (!hasJoined.current) {
-            console.log('joining channel')
-            client.join(process.env.NEXT_PUBLIC_AGORA_APP_ID!, uid, null)
             hasJoined.current = true
+            client.join(process.env.NEXT_PUBLIC_AGORA_APP_ID!, uid, null)
+        }
+
+        return () => {
+            if (client.connectionState === 'CONNECTED') {
+                client.leave()
+            }
         }
     }, [])
 
     useEffect(() => {
-        const onJoinChannel = async (channel: string) => {
-            const localChannel = uid
-            if (channel === 'local' && currentChannel.current === localChannel) return
-            if (channel === currentChannel.current) return
+        const onJoinChannel = (channel: string) => {
+            if (timeoutRef.current) clearTimeout(timeoutRef.current)
+            // TODO: Add debounce
+            timeoutRef.current = setTimeout(async () => {
+                const localChannel = uid
+                if (channel === 'local' && currentChannel.current === localChannel) return
+                if (channel === currentChannel.current) return
 
-            await client.leave()
+                await client.leave()
 
-            if (channel === 'local') {
-                currentChannel.current = localChannel
-                await client.join(process.env.NEXT_PUBLIC_AGORA_APP_ID!, localChannel, null)
-            } else {
-                currentChannel.current = channel
-                await client.join(process.env.NEXT_PUBLIC_AGORA_APP_ID!, channel, null)
-            }
+                if (channel === 'local') {
+                    currentChannel.current = localChannel
+                    await client.join(process.env.NEXT_PUBLIC_AGORA_APP_ID!, localChannel, null)
+                } else {
+                    currentChannel.current = channel
+                    await client.join(process.env.NEXT_PUBLIC_AGORA_APP_ID!, channel, null)
+                }
+            }, 1000)
         }
 
         signal.on('joinChannel', onJoinChannel)
