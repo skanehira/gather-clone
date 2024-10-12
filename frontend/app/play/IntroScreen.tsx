@@ -7,6 +7,8 @@ import {
 } from 'agora-rtc-react'
 import { useVideoChat } from '../hooks/useVideoChat'
 import MicAndCameraButtons from '@/components/VideoChat/MicAndCameraButtons'
+import { useEffect } from 'react'
+import { videoChat } from '@/utils/video-chat/video-chat'
 
 type IntroScreenProps = {
     realmName: string
@@ -46,19 +48,18 @@ const IntroScreen:React.FC<IntroScreenProps> = ({ realmName, skin, username, set
 export default IntroScreen
 
 function LocalVideo() {
-    const { localCameraTrack, isCameraEnabled, isMicrophoneEnabled } = useVideoChat()
+    const { isCameraMuted, isMicMuted } = useVideoChat()
+
     return (
         <div className='w-full h-full bg-[#111111] grid place-items-center relative'>
-            <LocalVideoTrack 
-                track={localCameraTrack}
-                play={true}
-                className='w-full h-full'
-            />
-            <div className='absolute select-none text-sm text-white items-center flex flex-col gap-1'>
-                {!isMicrophoneEnabled && !isCameraEnabled && <p>You are muted</p>}
-                {!isCameraEnabled && <p>Your camera is off</p>}
+            <div id='local-video' className='w-full h-full'>
+
             </div>
-            {!isMicrophoneEnabled && isCameraEnabled && <p className='absolute bottom-2 right-3 select-none text-sm text-white bg-black bg-opacity-50 p-1 px-2 rounded-full'>
+            <div className='absolute select-none text-sm text-white items-center flex flex-col gap-1'>
+                {isMicMuted && isCameraMuted && <p>You are muted</p>}
+                {isCameraMuted && <p>Your camera is off</p>}
+            </div>
+            {isMicMuted && !isCameraMuted && <p className='absolute bottom-2 right-3 select-none text-sm text-white bg-black bg-opacity-50 p-1 px-2 rounded-full'>
                 You are muted
             </p>}
         </div>

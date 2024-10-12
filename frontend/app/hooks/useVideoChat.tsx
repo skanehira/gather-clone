@@ -1,30 +1,23 @@
 import React, { createContext, useContext, ReactNode, useEffect, useState, useMemo, useRef } from 'react'
 import AgoraRTC, { 
     AgoraRTCProvider, 
-    useLocalCameraTrack, 
-    ICameraVideoTrack, 
-    useLocalMicrophoneTrack, 
-    IMicrophoneAudioTrack,
-    usePublish,
     useRemoteUsers,
     useRemoteAudioTracks,
     IAgoraRTCRemoteUser,
     IAgoraRTCClient,
 } from 'agora-rtc-react'
 import signal from '../../utils/signal'
+import { videoChat } from '../../utils/video-chat/video-chat'
 
 interface VideoChatContextType {
-    localCameraTrack: ICameraVideoTrack | null
-    localMicrophoneTrack: IMicrophoneAudioTrack | null
     toggleCamera: () => void
     toggleMicrophone: () => void
-    isCameraEnabled: boolean
-    isMicrophoneEnabled: boolean
+    isCameraMuted: boolean
+    isMicMuted: boolean
     remoteUsers: IAgoraRTCRemoteUser[]
 }
 
 const VideoChatContext = createContext<VideoChatContextType | undefined>(undefined)
-
 
 interface AgoraVideoChatProviderProps {
     children: ReactNode
@@ -54,47 +47,16 @@ export const AgoraVideoChatProvider: React.FC<AgoraVideoChatProviderProps> = ({ 
 }
 
 const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children, uid, client }) => {
-    const [isCameraEnabled, setIsCameraEnabled] = useState(false)
-    const [isMicrophoneEnabled, setIsMicrophoneEnabled] = useState(false)
+    const [isCameraMuted, setIsCameraMuted] = useState(true)
+    const [isMicMuted, setIsMicMuted] = useState(true)
     
-    const { localCameraTrack } = useLocalCameraTrack(isCameraEnabled)
-    const { localMicrophoneTrack } = useLocalMicrophoneTrack(isMicrophoneEnabled)
-
     const remoteUsers = useRemoteUsers()
     const { audioTracks } = useRemoteAudioTracks(remoteUsers)
 
     audioTracks.map((track) => track.play())
-    usePublish([localCameraTrack, localMicrophoneTrack])
 
-    const hasJoined = useRef(false)
     const currentChannel = useRef(uid)
     const timeoutRef = useRef<NodeJS.Timeout | null>(null)
-
-    useEffect(() => {
-        return () => {
-            localCameraTrack?.close()
-        }
-    }, [localCameraTrack])
-
-    useEffect(() => {
-        return () => {
-            localMicrophoneTrack?.close()
-        }
-    }, [localMicrophoneTrack])
-
-    useEffect(() => {
-
-        if (!hasJoined.current) {
-            hasJoined.current = true
-            client.join(process.env.NEXT_PUBLIC_AGORA_APP_ID!, uid, null)
-        }
-
-        return () => {
-            if (client.connectionState === 'CONNECTED') {
-                client.leave()
-            }
-        }
-    }, [])
 
     useEffect(() => {
         const onJoinChannel = (channel: string) => {
@@ -125,28 +87,20 @@ const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children, uid, cl
     }, [])
 
     const toggleCamera = async () => {
-        const enabled = !isCameraEnabled
-        if (localCameraTrack) {
-            await localCameraTrack.setEnabled(enabled)
-        }
-        setIsCameraEnabled(enabled)
+        const muted = await videoChat.toggleCamera()
+        setIsCameraMuted(muted)
     }
 
     const toggleMicrophone = async () => {
-        const enabled = !isMicrophoneEnabled
-        if (localMicrophoneTrack) {
-            await localMicrophoneTrack.setEnabled(enabled)
-        }
-        setIsMicrophoneEnabled(enabled)
+        const muted = await videoChat.toggleMicrophone()
+        setIsMicMuted(muted)
     }
 
     const value: VideoChatContextType = {
-        localCameraTrack,
-        localMicrophoneTrack,
         toggleCamera,
         toggleMicrophone,
-        isCameraEnabled,
-        isMicrophoneEnabled,
+        isCameraMuted,
+        isMicMuted,
         remoteUsers,
     }
 
