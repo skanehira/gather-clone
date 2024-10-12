@@ -2,13 +2,8 @@
 import React from 'react'
 import BasicButton from '@/components/BasicButton'
 import AnimatedCharacter from './SkinMenu/AnimatedCharacter'
-import { 
-    LocalVideoTrack, 
-} from 'agora-rtc-react'
 import { useVideoChat } from '../hooks/useVideoChat'
 import MicAndCameraButtons from '@/components/VideoChat/MicAndCameraButtons'
-import { useEffect } from 'react'
-import { videoChat } from '@/utils/video-chat/video-chat'
 
 type IntroScreenProps = {
     realmName: string

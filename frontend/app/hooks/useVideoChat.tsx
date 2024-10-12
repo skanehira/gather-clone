@@ -11,7 +11,6 @@ interface VideoChatContextType {
     toggleMicrophone: () => void
     isCameraMuted: boolean
     isMicMuted: boolean
-    remoteUsers: IAgoraRTCRemoteUser[]
 }
 
 const VideoChatContext = createContext<VideoChatContextType | undefined>(undefined)
@@ -45,8 +44,6 @@ const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children }) => {
     const [isCameraMuted, setIsCameraMuted] = useState(true)
     const [isMicMuted, setIsMicMuted] = useState(true)
 
-    const [remoteUsers, setRemoteUsers] = useState<IAgoraRTCRemoteUser[]>([])
-    
     const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
     useEffect(() => {
@@ -69,10 +66,6 @@ const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children }) => {
         }
     }, [])
 
-    useEffect(() => {
-        videoChat.setUserListUpdateHandler(setRemoteUsers)
-    }, [setRemoteUsers])
-
     const toggleCamera = async () => {
         const muted = await videoChat.toggleCamera()
         setIsCameraMuted(muted)
@@ -88,7 +81,6 @@ const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children }) => {
         toggleMicrophone,
         isCameraMuted,
         isMicMuted,
-        remoteUsers,
     }
 
     return (

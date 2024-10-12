@@ -8,8 +8,6 @@ export class VideoChat {
 
     private remoteUsers: { [uid: string]: IAgoraRTCRemoteUser } = {}
 
-    private userListUpdateHandler: ((users: IAgoraRTCRemoteUser[]) => void) | null = null
-
     constructor() {
         AgoraRTC.setLogLevel(4)
         this.client.on('user-published', this.onUserJoined)
@@ -19,22 +17,30 @@ export class VideoChat {
     public onUserJoined = async (user: IAgoraRTCRemoteUser, mediaType: "audio" | "video" | "datachannel", config?: IDataChannelConfig) => {
         this.remoteUsers[user.uid] = user
         await this.client.subscribe(user, mediaType)
-        
-        if (this.userListUpdateHandler) {
-            this.userListUpdateHandler(Object.values(this.remoteUsers))
-        }
-    }
+        console.log('USER JOINED')
 
-    public setUserListUpdateHandler(handler: (users: IAgoraRTCRemoteUser[]) => void) {
-        this.userListUpdateHandler = handler
+        if (mediaType === 'video') {
+            let player = document.getElementById(`remote-user-${user.uid}`)
+            if (player) {
+                player.remove()
+            }
+
+            const newPlayer = document.createElement('div')
+            newPlayer.id = `remote-user-${user.uid}`
+            newPlayer.className = 'w-[233px] h-[130px] bg-secondary rounded-lg overflow-hidden'
+            document.getElementById('video-container')?.appendChild(newPlayer)
+
+            user.videoTrack?.play(`remote-user-${user.uid}`)
+        }
+
+        if (mediaType === 'audio') {
+            user.audioTrack?.play()
+        }
     }
 
     public onUserLeft = (user: IAgoraRTCRemoteUser, reason: string) => {
         delete this.remoteUsers[user.uid]
-        
-        if (this.userListUpdateHandler) {
-            this.userListUpdateHandler(Object.values(this.remoteUsers))
-        }
+        document.getElementById(`remote-user-${user.uid}`)?.remove()
     }
 
     public async toggleCamera() {
@@ -62,8 +68,8 @@ export class VideoChat {
 
             return false
         }
-        await this.microphoneTrack.setMuted(!this.microphoneTrack.muted)
-        return this.microphoneTrack.muted
+        await this.microphoneTrack.setEnabled(!this.microphoneTrack.enabled)
+        return !this.microphoneTrack.enabled
     }
 
     public playVideoTrackAtElementId(elementId: string) {
@@ -73,10 +79,10 @@ export class VideoChat {
     }
 
     private resetRemoteUsers() {
+        Object.values(this.remoteUsers).forEach((user) => {
+            document.getElementById(`remote-user-${user.uid}`)?.remove()
+        })
         this.remoteUsers = {}
-        if (this.userListUpdateHandler) {
-            this.userListUpdateHandler([])
-        }
     }
 
     public async joinChannel(channel: string) {
@@ -89,10 +95,10 @@ export class VideoChat {
         await this.client.join(process.env.NEXT_PUBLIC_AGORA_APP_ID!, channel, null)
         this.currentChannel = channel
 
-        if (this.microphoneTrack) {
+        if (this.microphoneTrack && this.microphoneTrack.enabled) {
             await this.client.publish([this.microphoneTrack])
         }
-        if (this.cameraTrack) {
+        if (this.cameraTrack && this.cameraTrack.enabled) {
             await this.client.publish([this.cameraTrack])
         }
     }
