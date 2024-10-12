@@ -86,6 +86,12 @@ const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children, uid, cl
         }
     }, [])
 
+    useEffect(() => {
+        return () => {
+            videoChat.cleanup()
+        }
+    }, [])
+
     const toggleCamera = async () => {
         const muted = await videoChat.toggleCamera()
         setIsCameraMuted(muted)

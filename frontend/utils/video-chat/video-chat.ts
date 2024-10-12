@@ -15,8 +15,8 @@ export class VideoChat {
             this.cameraTrack.play('local-video')
             return false
         }
-        await this.cameraTrack.setMuted(!this.cameraTrack.muted)
-        return this.cameraTrack.muted
+        await this.cameraTrack.setEnabled(!this.cameraTrack.enabled)
+        return !this.cameraTrack.enabled
     }
 
     public async toggleMicrophone() {
@@ -32,6 +32,17 @@ export class VideoChat {
         if (this.cameraTrack) {
             this.cameraTrack.play(elementId)
         }
+    }
+
+    public cleanup() {
+        if (this.cameraTrack) {
+            this.cameraTrack.setEnabled(false)
+        }
+        if (this.microphoneTrack) {
+            this.microphoneTrack.setEnabled(false)
+        }
+        this.microphoneTrack = null
+        this.cameraTrack = null
     }
 }
 

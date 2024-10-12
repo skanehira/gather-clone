@@ -5,9 +5,10 @@ import signal from '@/utils/signal'
 import { ArrowLeftEndOnRectangleIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import MicAndCameraButtons from '@/components/VideoChat/MicAndCameraButtons'
-import { LocalVideoTrack } from 'agora-rtc-react'
 import { useVideoChat } from '../hooks/useVideoChat'
 import AnimatedCharacter from './SkinMenu/AnimatedCharacter'
+import { useEffect } from 'react'
+import { videoChat } from '@/utils/video-chat/video-chat'
 
 type PlayNavbarProps = {
     username: string
@@ -18,11 +19,15 @@ type PlayNavbarProps = {
 const PlayNavbar:React.FC<PlayNavbarProps> = ({ username, skin }) => {
 
     const { setModal } = useModal()
-    const { localCameraTrack, isCameraEnabled } = useVideoChat()
+    const { isCameraMuted } = useVideoChat()
     function onClickSkinButton() {
         setModal('Skin')
         signal.emit('requestSkin')
     }
+
+    useEffect(() => {
+        videoChat.playVideoTrackAtElementId('local-video')
+    }, [])
 
     return (
         <div className='bg-primary w-full h-14 absolute bottom-0 flex flex-row items-center p-2 gap-4 select-none'>
@@ -32,11 +37,9 @@ const PlayNavbar:React.FC<PlayNavbarProps> = ({ username, skin }) => {
             <div className='h-full w-[200px] bg-secondary rounded-lg overflow-hidden flex flex-row'>
                 <div className='w-[60px] h-full border-r-[1px] border-light-gray relative grid place-items-center'>
                     <AnimatedCharacter src={'/sprites/characters/Character_' + skin + '.png'} noAnimation className='w-8 h-8 absolute bottom-1' />
-                    {isCameraEnabled && <LocalVideoTrack 
-                        track={localCameraTrack}
-                        play={true}
-                        className='w-full h-full absolute'
-                    />}
+                        <div id='local-video' className={`w-full h-full absolute ${!isCameraMuted ? 'block' : 'hidden'}`}>
+
+                        </div>
                 </div>
                 <div className='w-full flex flex-col p-1 pl-2'>
                     <p className='text-white text-xs'>{username}</p>
