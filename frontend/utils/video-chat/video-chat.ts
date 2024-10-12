@@ -1,4 +1,4 @@
-import AgoraRTC, { IAgoraRTCClient, ICameraVideoTrack, IMicrophoneAudioTrack } from 'agora-rtc-sdk-ng'
+import AgoraRTC, { IAgoraRTCClient, ICameraVideoTrack, IMicrophoneAudioTrack, IAgoraRTCRemoteUser, IDataChannelConfig } from 'agora-rtc-sdk-ng'
 
 export class VideoChat {
     private client: IAgoraRTCClient = AgoraRTC.createClient({ codec: "vp8", mode: "rtc" })
@@ -6,8 +6,38 @@ export class VideoChat {
     private cameraTrack: ICameraVideoTrack | null = null
     private currentChannel: string = ''
 
+    private remoteUsers: { [uid: string]: IAgoraRTCRemoteUser } = {}
+
+    private userListUpdateHandler: ((users: IAgoraRTCRemoteUser[]) => void) | null = null
+
     constructor() {
         AgoraRTC.setLogLevel(4)
+        this.client.on('user-published', this.onUserJoined)
+        this.client.on('user-left', this.onUserLeft)
+    }
+
+    public async onUserJoined(user: IAgoraRTCRemoteUser, mediaType: "audio" | "video" | "datachannel", config?: IDataChannelConfig) {
+        this.remoteUsers[user.uid] = user
+        console.log('USER JOINED')
+        console.log(this.client)
+        await this.client.subscribe(user, mediaType)
+        
+        if (this.userListUpdateHandler) {
+            this.userListUpdateHandler(Object.values(this.remoteUsers))
+        }
+    }
+
+    public setUserListUpdateHandler(handler: (users: IAgoraRTCRemoteUser[]) => void) {
+        console.log('running')
+        this.userListUpdateHandler = handler
+    }
+
+    public onUserLeft(user: IAgoraRTCRemoteUser, reason: string) {
+        delete this.remoteUsers[user.uid]
+        
+        if (this.userListUpdateHandler) {
+            this.userListUpdateHandler(Object.values(this.remoteUsers))
+        }
     }
 
     public async toggleCamera() {
@@ -73,10 +103,12 @@ export class VideoChat {
 
     public destroy() {
         if (this.cameraTrack) {
-            this.cameraTrack.setEnabled(false)
+            this.cameraTrack.stop()
+            this.cameraTrack.close()
         }
         if (this.microphoneTrack) {
-            this.microphoneTrack.setEnabled(false)
+            this.microphoneTrack.stop()
+            this.microphoneTrack.close()
         }
         this.microphoneTrack = null
         this.cameraTrack = null

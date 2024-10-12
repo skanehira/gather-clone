@@ -1,10 +1,8 @@
 import React, { createContext, useContext, ReactNode, useEffect, useState, useMemo, useRef } from 'react'
 import AgoraRTC, { 
     AgoraRTCProvider, 
-    useRemoteUsers,
-    useRemoteAudioTracks,
-    IAgoraRTCRemoteUser,
 } from 'agora-rtc-react'
+import { IAgoraRTCRemoteUser } from 'agora-rtc-sdk-ng'
 import signal from '../../utils/signal'
 import { videoChat } from '../../utils/video-chat/video-chat'
 
@@ -27,7 +25,7 @@ interface VideoChatProviderProps {
   children: ReactNode
 }
 
-export const AgoraVideoChatProvider: React.FC<AgoraVideoChatProviderProps> = ({ children, uid }) => {
+export const AgoraVideoChatProvider: React.FC<AgoraVideoChatProviderProps> = ({ children }) => {
     const client = useMemo(() => {
         const newClient = AgoraRTC.createClient({ codec: "vp8", mode: "rtc" })
         AgoraRTC.setLogLevel(4)
@@ -46,12 +44,9 @@ export const AgoraVideoChatProvider: React.FC<AgoraVideoChatProviderProps> = ({ 
 const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children }) => {
     const [isCameraMuted, setIsCameraMuted] = useState(true)
     const [isMicMuted, setIsMicMuted] = useState(true)
+
+    const [remoteUsers, setRemoteUsers] = useState<IAgoraRTCRemoteUser[]>([])
     
-    const remoteUsers = useRemoteUsers()
-    const { audioTracks } = useRemoteAudioTracks(remoteUsers)
-
-    audioTracks.map((track) => track.play())
-
     const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
     useEffect(() => {
@@ -70,14 +65,13 @@ const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children }) => {
 
         return () => {
             signal.off('joinChannel', onJoinChannel)
+            videoChat.destroy()
         }
     }, [])
 
     useEffect(() => {
-        return () => {
-            videoChat.destroy()
-        }
-    }, [])
+        videoChat.setUserListUpdateHandler(setRemoteUsers)
+    }, [setRemoteUsers, remoteUsers])
 
     const toggleCamera = async () => {
         const muted = await videoChat.toggleCamera()
