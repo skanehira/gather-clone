@@ -88,7 +88,7 @@ const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children, uid, cl
 
     useEffect(() => {
         return () => {
-            videoChat.cleanup()
+            videoChat.destroy()
         }
     }, [])
 

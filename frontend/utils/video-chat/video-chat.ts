@@ -34,7 +34,7 @@ export class VideoChat {
         }
     }
 
-    public cleanup() {
+    public destroy() {
         if (this.cameraTrack) {
             this.cameraTrack.setEnabled(false)
         }
