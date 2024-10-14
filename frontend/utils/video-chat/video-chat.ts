@@ -8,6 +8,8 @@ export class VideoChat {
 
     private remoteUsers: { [uid: string]: IAgoraRTCRemoteUser } = {}
 
+    private channelTimeout: NodeJS.Timeout | null = null
+
     constructor() {
         AgoraRTC.setLogLevel(4)
         this.client.on('user-published', this.onUserJoined)
@@ -86,31 +88,44 @@ export class VideoChat {
     }
 
     public async joinChannel(channel: string) {
-        if (channel === this.currentChannel) return
-        if (this.client.connectionState === 'CONNECTED') {
-            await this.client.leave()
+        if (this.channelTimeout) {
+            clearTimeout(this.channelTimeout)
         }
-        this.resetRemoteUsers()
 
-        await this.client.join(process.env.NEXT_PUBLIC_AGORA_APP_ID!, channel, null)
-        this.currentChannel = channel
+        this.channelTimeout = setTimeout(async () => {
+            if (channel === this.currentChannel) return
+            if (this.client.connectionState === 'CONNECTED') {
+                await this.client.leave()
+            }
+            this.resetRemoteUsers()
 
-        if (this.microphoneTrack && this.microphoneTrack.enabled) {
-            await this.client.publish([this.microphoneTrack])
-        }
-        if (this.cameraTrack && this.cameraTrack.enabled) {
-            await this.client.publish([this.cameraTrack])
-        }
+            await this.client.join(process.env.NEXT_PUBLIC_AGORA_APP_ID!, channel, null)
+            this.currentChannel = channel
+
+            if (this.microphoneTrack && this.microphoneTrack.enabled) {
+                await this.client.publish([this.microphoneTrack])
+            }
+            if (this.cameraTrack && this.cameraTrack.enabled) {
+                await this.client.publish([this.cameraTrack])
+            }
+        }, 1000)
     }
 
     public async leaveChannel() {
-        if (this.currentChannel === '') return
-
-        if (this.client.connectionState === 'CONNECTED') {
-            await this.client.leave()
-            this.currentChannel = ''
+        if (this.channelTimeout) {
+            clearTimeout(this.channelTimeout)
         }
-        this.resetRemoteUsers()
+
+        this.channelTimeout = setTimeout(async () => {
+            if (this.currentChannel === '') return
+
+            if (this.client.connectionState === 'CONNECTED') {
+                await this.client.leave()
+                this.currentChannel = ''
+            }
+            this.resetRemoteUsers()
+        }, 1000)
+        
     }
 
     public destroy() {

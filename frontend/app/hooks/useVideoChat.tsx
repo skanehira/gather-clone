@@ -44,24 +44,8 @@ const VideoChatProvider: React.FC<VideoChatProviderProps> = ({ children }) => {
     const [isCameraMuted, setIsCameraMuted] = useState(true)
     const [isMicMuted, setIsMicMuted] = useState(true)
 
-    const timeoutRef = useRef<NodeJS.Timeout | null>(null)
-
     useEffect(() => {
-        const onJoinChannel = (channel: string) => {
-            if (timeoutRef.current) clearTimeout(timeoutRef.current)
-            timeoutRef.current = setTimeout(async () => {
-                if (channel === 'local') {
-                    await videoChat.leaveChannel()
-                    return
-                }
-                await videoChat.joinChannel(channel)
-            }, 1000)
-        }
-
-        signal.on('joinChannel', onJoinChannel)
-
         return () => {
-            signal.off('joinChannel', onJoinChannel)
             videoChat.destroy()
         }
     }, [])

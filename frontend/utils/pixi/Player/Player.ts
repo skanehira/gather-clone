@@ -6,7 +6,7 @@ import { bfs } from '../pathfinding'
 import { server } from '../../backend/server'
 import { defaultSkin, skins } from './skins'
 import signal from '@/utils/signal'
-
+import { videoChat } from '@/utils/video-chat/video-chat'
 function formatText(message: string, maxLength: number): string {
     message = message.trim()
     const words = message.split(' ')
@@ -295,12 +295,12 @@ export class Player {
         const tile = this.playApp.realmData.rooms[this.playApp.currentRoomIndex].tilemap[`${newTilePosition.x}, ${newTilePosition.y}`]
         if (tile.privateAreaId) {
             if (tile.privateAreaId !== this.currentChannel) {
-                signal.emit('joinChannel', tile.privateAreaId)
+                videoChat.joinChannel(tile.privateAreaId)
                 this.currentChannel = tile.privateAreaId
             }
         } else {
             if (this.currentChannel !== 'local') {
-                signal.emit('joinChannel', 'local')
+                videoChat.leaveChannel()
                 this.currentChannel = 'local'
             }
         }
