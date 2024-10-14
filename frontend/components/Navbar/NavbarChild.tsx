@@ -1,5 +1,6 @@
 'use client'
 import React from 'react'
+import Image from 'next/image'
 import { PlusCircleIcon } from '@heroicons/react/24/outline'
 import { useModal } from '@/app/hooks/useModal'
 import BasicButton from '../BasicButton'
@@ -22,7 +23,7 @@ export const NavbarChild:React.FC<NavbarChildProps> = ({ name, avatar_url }) => 
                 </BasicButton>
                 <div className='flex flex-row items-center gap-4 hover:bg-light-secondary animate-colors rounded-full cursor-pointer py-1 px-1 select-none' onClick={() => setModal('Account Dropdown')}>
                     <p className='text-white'>{name}</p>
-                    <img alt='avatar' src={avatar_url} className='aspect-square rounded-full w-12' />
+                    <Image alt='avatar' src={avatar_url} width={48} height={48} className='aspect-square rounded-full' />
                 </div>
             </div>
         </div> 
