@@ -1,7 +1,7 @@
 import React from 'react'
 import SpecialTileItem from './SpecialTileItem'
 import { SpecialTile } from '@/utils/pixi/types'
-import { Placeholder, FlyingSaucer, Tree } from '@phosphor-icons/react'
+import { Placeholder, FlyingSaucer, Tree, Desk } from '@phosphor-icons/react'
 
 type SpecialTilesProps = {
     specialTile: SpecialTile
@@ -12,6 +12,14 @@ const SpecialTiles:React.FC<SpecialTilesProps> = ({ specialTile, selectSpecialTi
 
     return (
         <div className='w-full flex flex-col items-center'>
+            <SpecialTileItem 
+                iconColor='yellow' 
+                title='Private Area' 
+                description='Specify an area where players can talk privately.' 
+                selected={specialTile === 'Private Area'} 
+                onClick={() => selectSpecialTile('Private Area')}>
+                <Desk className='w-12 h-12'/>
+            </SpecialTileItem>
             <SpecialTileItem 
                 iconColor='red' 
                 title='Impassable' 
