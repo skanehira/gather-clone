@@ -130,11 +130,14 @@ export class EditorApp extends App {
     }
 
     private loadAssets = async () => {
-        await PIXI.Assets.load('/sprites/tile-outline.png')
-        await PIXI.Assets.load('/sprites/erase-tile.png')
-        await PIXI.Assets.load('/sprites/collider-tile.png')
-        await PIXI.Assets.load('/sprites/teleport-tile.png')
-        await PIXI.Assets.load('/sprites/spawn-tile.png')
+        await Promise.all([
+            PIXI.Assets.load('/sprites/tile-outline.png'),
+            PIXI.Assets.load('/sprites/erase-tile.png'),
+            PIXI.Assets.load('/sprites/collider-tile.png'),
+            PIXI.Assets.load('/sprites/teleport-tile.png'),
+            PIXI.Assets.load('/sprites/spawn-tile.png'),
+            PIXI.Assets.load('/sprites/private-tile.png')
+        ])
     }
 
     private placeSpawnTileSprite = (x: number, y: number) => {
@@ -198,12 +201,29 @@ export class EditorApp extends App {
 
     private isColliderAtPosition = (x: number, y: number) => {
         const key = `${x}, ${y}` as TilePoint
-        return this.collidersFromSpritesMap[key] || this.realmData.rooms[this.currentRoomIndex].tilemap[key]?.impassable === true
+        return this.collidersFromSpritesMap[key] || this.isImpassableColliderAtPosition(x, y)
     }
 
     private isImpassableColliderAtPosition = (x: number, y: number) => {
         const key = `${x}, ${y}` as TilePoint
         return this.realmData.rooms[this.currentRoomIndex].tilemap[key]?.impassable === true
+    }
+
+    private placePrivateArea = (x: number, y: number, tile: PIXI.Sprite, snapshot: boolean) => {
+        const key = `${x}, ${y}` as TilePoint
+
+        this.placePrivateAreaSprite(x, y, tile)
+    }
+
+    private placePrivateAreaSprite = (x: number, y: number, tile: PIXI.Sprite) => {
+        const key = `${x}, ${y}` as TilePoint
+        const sprite = tile || new PIXI.Sprite(PIXI.Texture.from('/sprites/private-tile.png'))
+        sprite.x = x * 32
+        sprite.y = y * 32
+        this.gizmoContainer.addChild(sprite)
+        this.gizmoSprites[key] = sprite
+
+        return sprite
     }
 
     private placeTeleportSprite = (x: number, y: number, tile?: PIXI.Sprite) => {
@@ -331,7 +351,6 @@ export class EditorApp extends App {
     private onSelectTile = (tile: string) => {
         this.selectedTile = tile
         this.toolMode = 'Tile'
-        const spriteLayer = sprites.getSpriteLayer(this.selectedPalette, this.selectedTile)
         this.setSpecialTileToNone()
     }
 
@@ -428,6 +447,9 @@ export class EditorApp extends App {
             return
         } else if (type === 'Spawn') {
             this.placeSpawnTile(x, y)
+            return
+        } else if (type === 'Private Area') {
+            this.placePrivateArea(x, y, tile, snapshot)
             return
         }
 
@@ -876,6 +898,10 @@ export class EditorApp extends App {
             const spawnTile = new PIXI.Sprite(PIXI.Texture.from('/sprites/spawn-tile.png'))
             const layer = 'gizmo'
             return { data: {} as SpriteSheetTile, layer, tile: spawnTile, type: 'Spawn' }
+        } else if (this.specialTileMode === 'Private Area') {
+            const privateAreaTile = new PIXI.Sprite(PIXI.Texture.from('/sprites/private-tile.png'))
+            const layer = 'gizmo'
+            return { data: {} as SpriteSheetTile, layer, tile: privateAreaTile, type: 'Private Area' }
         }
 
         const data = sprites.getSpriteData(this.selectedPalette, this.selectedTile)
@@ -1144,6 +1170,10 @@ export class EditorApp extends App {
         // rectangle mode does nothing for object layer or teleport
         if (this.specialTileMode === 'Teleport' || this.specialTileMode === 'Spawn') {
             return 'Single'
+        }
+
+        if (this.specialTileMode === 'Private Area') {
+            return 'Rectangle'
         }
 
         return this.tileMode

@@ -85,7 +85,7 @@ const LeftBar:React.FC<LeftBarProps> = ({ tool, tileMode, selectTool, selectTile
                 <GridFour className='h-8 w-8'/>
             </ToolButton>
             <div className='w-full h-[2px] bg-black'/>
-            <ToolButton selected={false} onClick={toggleShowGizmos} label={'Toggle Special Tiles'} className={specialTile !== 'None' ? 'pointer-events-none text-gray-700' : ''}>
+            <ToolButton selected={false} onClick={toggleShowGizmos} label={'Toggle Special Tiles'} className={specialTile !== 'None' ? 'pointer-events-none text-gray-500' : ''}>
                 {showGizmos ? <EyeSlash className='h-8 w-8'/> : <Eye className='h-8 w-8'/>}
             </ToolButton>
             <div className='w-full h-[2px] bg-black'/>
