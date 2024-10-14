@@ -293,12 +293,16 @@ export class Player {
         if (!this.isLocal) return
 
         const tile = this.playApp.realmData.rooms[this.playApp.currentRoomIndex].tilemap[`${newTilePosition.x}, ${newTilePosition.y}`]
-        if (tile.privateAreaId && tile.privateAreaId !== this.currentChannel) {
-            signal.emit('joinChannel', tile.privateAreaId)
-            this.currentChannel = tile.privateAreaId
-        } else if (this.currentChannel !== 'local') {
-            signal.emit('joinChannel', 'local')
-            this.currentChannel = 'local'
+        if (tile.privateAreaId) {
+            if (tile.privateAreaId !== this.currentChannel) {
+                signal.emit('joinChannel', tile.privateAreaId)
+                this.currentChannel = tile.privateAreaId
+            }
+        } else {
+            if (this.currentChannel !== 'local') {
+                signal.emit('joinChannel', 'local')
+                this.currentChannel = 'local'
+            }
         }
     }
 
