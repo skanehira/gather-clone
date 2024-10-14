@@ -109,6 +109,12 @@ export class EditorApp extends App {
                 const sprite = this.placeTeleportSprite(x, y)
                 this.setUpEraserTool(sprite, x, y, 'gizmo')
             }
+
+            if (value.privateAreaId) {
+                const [x, y] = key.split(',').map(Number)
+                const sprite = this.placePrivateAreaSprite(x, y)
+                this.setUpEraserTool(sprite, x, y, 'gizmo')
+            }
         }
 
         if (this.currentRoomIndex === this.realmData.spawnpoint.roomIndex) {
@@ -187,7 +193,6 @@ export class EditorApp extends App {
     } 
 
     private placeImpassableCollider = (x: number, y: number, tile: PIXI.Sprite, snapshot: boolean) => {
-        const key = `${x}, ${y}` as TilePoint
         if (this.isColliderAtPosition(x, y) || (this.realmData.spawnpoint.x === x && this.realmData.spawnpoint.y === y)) return
     
         this.removeGizmoAtPosition(x, y, false)
@@ -226,7 +231,7 @@ export class EditorApp extends App {
         this.placePrivateAreaSprite(x, y, tile)
     }
 
-    private placePrivateAreaSprite = (x: number, y: number, tile: PIXI.Sprite) => {
+    private placePrivateAreaSprite = (x: number, y: number, tile?: PIXI.Sprite) => {
         const key = `${x}, ${y}` as TilePoint
         const sprite = tile || new PIXI.Sprite(PIXI.Texture.from('/sprites/private-tile.png'))
         sprite.x = x * 32
