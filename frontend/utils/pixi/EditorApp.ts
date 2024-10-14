@@ -36,6 +36,8 @@ export class EditorApp extends App {
     private eraserTiles: PIXI.Sprite[] = []
     private spawnTile: PIXI.Sprite = new PIXI.Sprite()
 
+    private currentPrivateAreaId: string = 'fortnite'
+
     public async init() {
         this.backgroundColor = 0xFFFFFF
         await this.loadAssets()
@@ -141,7 +143,8 @@ export class EditorApp extends App {
     }
 
     private placeSpawnTileSprite = (x: number, y: number) => {
-        if (this.collidersFromSpritesMap[`${x}, ${y}`]) return
+        const key = `${x}, ${y}` as TilePoint
+        if (this.collidersFromSpritesMap[key]) return
 
         this.removeSpawnTile()
         this.spawnTile = new PIXI.Sprite(PIXI.Texture.from('/sprites/spawn-tile.png'))
@@ -184,6 +187,7 @@ export class EditorApp extends App {
     } 
 
     private placeImpassableCollider = (x: number, y: number, tile: PIXI.Sprite, snapshot: boolean) => {
+        const key = `${x}, ${y}` as TilePoint
         if (this.isColliderAtPosition(x, y) || (this.realmData.spawnpoint.x === x && this.realmData.spawnpoint.y === y)) return
     
         this.removeGizmoAtPosition(x, y, false)
@@ -213,8 +217,12 @@ export class EditorApp extends App {
         const key = `${x}, ${y}` as TilePoint
         if (this.isColliderAtPosition(x, y) || 
             this.realmData.spawnpoint.x === x && this.realmData.spawnpoint.y === y || 
-            this.realmData.rooms[this.currentRoomIndex].tilemap[key]?.teleporter) return
+            this.realmData.rooms[this.currentRoomIndex].tilemap[key]?.teleporter ||
+            this.realmData.rooms[this.currentRoomIndex].tilemap[key]?.privateAreaId) {
+                return
+            }
 
+        this.addPrivateAreaToRealmData(x, y, snapshot)
         this.placePrivateAreaSprite(x, y, tile)
     }
 
@@ -241,7 +249,8 @@ export class EditorApp extends App {
     }
 
     private setUpTeleporterAtPosition = (x: number, y: number) => {
-        if (this.collidersFromSpritesMap[`${x}, ${y}`] || (this.realmData.spawnpoint.x === x && this.realmData.spawnpoint.y === y)) return
+        const key = `${x}, ${y}` as TilePoint
+        if (this.collidersFromSpritesMap[key] || (this.realmData.spawnpoint.x === x && this.realmData.spawnpoint.y === y)) return
 
         this.newTeleporterCoordinates = { x, y }
         const roomList = this.realmData.rooms.map((room: Room) => room.name)
@@ -699,12 +708,23 @@ export class EditorApp extends App {
         this.updateRealmData(newRealmData, snapshot)
     }
 
+    private addPrivateAreaToRealmData = (x: number, y: number, snapshot: boolean) => {
+        const key = `${x}, ${y}` as TilePoint
+        const newRealmData = this.getRealmDataCopy()
+        newRealmData.rooms[this.currentRoomIndex].tilemap[key] = {
+            ...newRealmData.rooms[this.currentRoomIndex].tilemap[key],
+            privateAreaId: this.currentPrivateAreaId
+        }
+        this.updateRealmData(newRealmData, snapshot)
+    }
+
     private removeGizmoFromRealmData = (x: number, y: number, snapshot: boolean) => {
         const key = `${x}, ${y}` as TilePoint
         const newRealmData = this.getRealmDataCopy()
         if (newRealmData.rooms[this.currentRoomIndex].tilemap[key]) {
             delete newRealmData.rooms[this.currentRoomIndex].tilemap[key].impassable
             delete newRealmData.rooms[this.currentRoomIndex].tilemap[key].teleporter
+            delete newRealmData.rooms[this.currentRoomIndex].tilemap[key].privateAreaId
 
             // delete the key if no data on it
             if (Object.keys(newRealmData.rooms[this.currentRoomIndex].tilemap[key]).length === 0) {
