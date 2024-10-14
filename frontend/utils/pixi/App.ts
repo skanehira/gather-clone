@@ -12,8 +12,8 @@ export class App {
         above_floor: new PIXI.Container(),
         object: new PIXI.Container(),
     }
-    protected currentRoomIndex: number = 0    
-    protected realmData: RealmData
+    public currentRoomIndex: number = 0    
+    public realmData: RealmData
     protected collidersFromSpritesMap: ColliderMap = {}
     protected backgroundColor: number = 0x0F0F0F
 

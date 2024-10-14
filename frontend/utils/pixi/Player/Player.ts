@@ -65,6 +65,8 @@ export class Player {
     private initialized: boolean = false
     private strikes: number = 0
 
+    private currentChannel: string = 'local'
+
     constructor(skin: string, playApp: PlayApp, username: string, isLocal: boolean = false) {
         this.skin = skin
         this.playApp = playApp
@@ -175,6 +177,13 @@ export class Player {
         }
     }
 
+    private convertPlayerPosToTilePos = (x: number, y: number) => {
+        return {
+            x: Math.floor(x / 32),
+            y: Math.floor(y / 32)
+        }
+    }
+
     public moveToTile = (x: number, y: number) => {
         if (this.strikes > 25) return
 
@@ -203,6 +212,9 @@ export class Player {
 
     private move = ({ deltaTime }: { deltaTime: number }) => {
         if (!this.targetPosition) return
+
+        const currentPos = this.convertPlayerPosToTilePos(this.parent.x, this.parent.y)
+        this.checkIfShouldJoinChannel(currentPos)
 
         this.currentTilePosition = {
             x: this.path[this.pathIndex][0],
@@ -246,8 +258,6 @@ export class Player {
                     const teleported = this.teleportIfOnTeleporter('mouse')
                     if (teleported) return
                 }
-
-                this.checkIfShouldJoinChannel(newTilePosition)
             }
         } else {
             const angle = Math.atan2(dy, dx)
@@ -280,35 +290,16 @@ export class Player {
     }
 
     private checkIfShouldJoinChannel = (newTilePosition: Point) => {
-        const adjacentTiles = [
-            newTilePosition,
-            { x: newTilePosition.x - 1, y: newTilePosition.y },
-            { x: newTilePosition.x + 1, y: newTilePosition.y },
-            { x: newTilePosition.x, y: newTilePosition.y - 1 },
-            { x: newTilePosition.x, y: newTilePosition.y + 1 }
-        ]
+        if (!this.isLocal) return
 
-        if (this.isLocal) {
-            for (const tile of adjacentTiles) {
-                // iterate through all players
-                for (const player of Object.values(this.playApp.players)) {
-                    if (player.currentTilePosition.x === tile.x && player.currentTilePosition.y === tile.y) {
-                        signal.emit('joinChannel', 'group')
-                        return
-                    }
-                }
-            }
-        } else {
-            for (const tile of adjacentTiles) {
-                // if the tile is the playApp.player position
-                if (this.playApp.player.currentTilePosition.x === tile.x && this.playApp.player.currentTilePosition.y === tile.y) {
-                    signal.emit('joinChannel', 'group')
-                    return
-                }
-            }
+        const tile = this.playApp.realmData.rooms[this.playApp.currentRoomIndex].tilemap[`${newTilePosition.x}, ${newTilePosition.y}`]
+        if (tile.privateAreaId && tile.privateAreaId !== this.currentChannel) {
+            signal.emit('joinChannel', tile.privateAreaId)
+            this.currentChannel = tile.privateAreaId
+        } else if (this.currentChannel !== 'local') {
+            signal.emit('joinChannel', 'local')
+            this.currentChannel = 'local'
         }
-
-        signal.emit('joinChannel', 'local')
     }
 
     private stop = () => {

@@ -4,6 +4,7 @@ import signal from '../signal'
 import { Layer, TilemapSprites, Tool, TilePoint, Point, RealmData, Room, TileMode, GizmoSpriteMap, SpecialTile } from './types'
 import { SheetName, SpriteSheetTile, sprites } from './spritesheet/spritesheet'
 import { formatForComparison } from '../removeExtraSpaces'
+import { v4 as uuidv4 } from 'uuid'
 
 export class EditorApp extends App {
     private maxTileCount: number = 10_000
@@ -36,7 +37,7 @@ export class EditorApp extends App {
     private eraserTiles: PIXI.Sprite[] = []
     private spawnTile: PIXI.Sprite = new PIXI.Sprite()
 
-    private currentPrivateAreaId: string = 'fortnite'
+    private currentPrivateAreaId: string = 'default'
 
     public async init() {
         this.backgroundColor = 0xFFFFFF
@@ -962,6 +963,10 @@ export class EditorApp extends App {
             // get array of tile coordinates between initial and final position in rectangle
             const dragEndPosition = e.getLocalPosition(this.app.stage)
             const squares = this.getTileCoordinatesInRectangle(this.initialDragPosition, dragEndPosition)
+
+            if (this.specialTileMode === 'Private Area') {
+                this.currentPrivateAreaId = uuidv4()
+            }
             
             // place the tiles!
             squares.forEach((square, index) => {
