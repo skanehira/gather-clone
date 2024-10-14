@@ -211,6 +211,9 @@ export class EditorApp extends App {
 
     private placePrivateArea = (x: number, y: number, tile: PIXI.Sprite, snapshot: boolean) => {
         const key = `${x}, ${y}` as TilePoint
+        if (this.isColliderAtPosition(x, y) || 
+            this.realmData.spawnpoint.x === x && this.realmData.spawnpoint.y === y || 
+            this.realmData.rooms[this.currentRoomIndex].tilemap[key]?.teleporter) return
 
         this.placePrivateAreaSprite(x, y, tile)
     }
