@@ -67,6 +67,8 @@ export class Player {
 
     private currentChannel: string = 'local'
 
+    private fadeTimeout: NodeJS.Timeout | null = null
+
     constructor(skin: string, playApp: PlayApp, username: string, isLocal: boolean = false) {
         this.skin = skin
         this.playApp = playApp
@@ -295,15 +297,27 @@ export class Player {
         const tile = this.playApp.realmData.rooms[this.playApp.currentRoomIndex].tilemap[`${newTilePosition.x}, ${newTilePosition.y}`]
         if (tile.privateAreaId) {
             if (tile.privateAreaId !== this.currentChannel) {
-                videoChat.joinChannel(tile.privateAreaId)
                 this.currentChannel = tile.privateAreaId
-            this.playApp.fadeInTiles(tile.privateAreaId)
+                videoChat.joinChannel(tile.privateAreaId)
+                if (this.fadeTimeout) {
+                    clearTimeout(this.fadeTimeout)
+                }
+                this.fadeTimeout = setTimeout(() => {
+                    if (!tile.privateAreaId) return
+                    this.playApp.fadeInTiles(tile.privateAreaId)
+                }, 50)
             }
         } else {
             if (this.currentChannel !== 'local') {
-                videoChat.leaveChannel()
                 this.currentChannel = 'local'
-                this.playApp.fadeOutTiles()
+                videoChat.leaveChannel()
+
+                if (this.fadeTimeout) {
+                    clearTimeout(this.fadeTimeout)
+                }
+                this.fadeTimeout = setTimeout(() => {
+                    this.playApp.fadeOutTiles()
+                }, 50)
             }
         }
     }
