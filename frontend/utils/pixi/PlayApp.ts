@@ -1,6 +1,6 @@
 import { App } from './App'
 import { Player } from './Player/Player'
-import { Point, RealmData, TilePoint } from './types'
+import { Point, RealmData, SpriteMap, TilePoint } from './types'
 import * as PIXI from 'pixi.js'
 import { server } from '../backend/server'
 import { defaultSkin } from './Player/skins'
@@ -21,6 +21,9 @@ export class PlayApp extends App {
 
     private kicked: boolean = false
 
+    private fadeTiles: SpriteMap = {}
+    private fadeTileContainer: PIXI.Container = new PIXI.Container()
+
     constructor(uid: string, realmData: RealmData, username: string, skin: string = defaultSkin) {
         super(realmData)
         this.uid = uid
@@ -31,14 +34,32 @@ export class PlayApp extends App {
         this.players = {}
         await super.loadRoom(index)
         this.setUpBlockedTiles()
+        this.setUpFadeTiles()
         this.spawnLocalPlayer()
         await this.syncOtherPlayers()
         this.displayInitialChatMessage()
     }
 
+    private setUpFadeTiles = () => {
+        this.fadeTiles = {}
+
+        for (const [key] of Object.entries(this.realmData.rooms[this.currentRoomIndex].tilemap)) {
+            const [x, y] = key.split(',').map(Number)
+            const screenCoordinates = this.convertTileToScreenCoordinates(x, y)
+            const tile: PIXI.Sprite = new PIXI.Sprite(PIXI.Assets.get('/sprites/faded-tile.png'))
+            tile.x = screenCoordinates.x
+            tile.y = screenCoordinates.y
+            this.fadeTileContainer.addChild(tile)
+            this.fadeTiles[key as TilePoint] = tile
+        }
+    }
+
     private async loadAssets() {
-        await PIXI.Assets.load('/fonts/silkscreen.ttf')
-        await PIXI.Assets.load('/fonts/nunito.ttf')
+        await Promise.all([
+            PIXI.Assets.load('/fonts/silkscreen.ttf'),
+            PIXI.Assets.load('/fonts/nunito.ttf'),
+            PIXI.Assets.load('/sprites/faded-tile.png')
+        ])
     }
 
     private async syncOtherPlayers() {
@@ -85,6 +106,8 @@ export class PlayApp extends App {
         this.app.stage.eventMode = 'static'
         this.setScale(this.scale)
         this.app.renderer.on('resize', this.resizeEvent)
+        this.fadeTileContainer.alpha = 0
+        this.app.stage.addChild(this.fadeTileContainer)
         this.clickEvents()
         this.setUpKeyboardEvents()
         this.setUpFadeOverlay()

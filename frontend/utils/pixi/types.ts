@@ -15,15 +15,15 @@ export type RealmData = z.infer<typeof RealmDataSchema>
 export type Room = z.infer<typeof RoomSchema>
 
 export interface ColliderMap {
-    [key: `${number}, ${number}`]: boolean
+    [key: TilePoint]: boolean
 }
 
-export interface GizmoSpriteMap {
-    [key: `${number}, ${number}`]: Sprite
+export interface SpriteMap {
+    [key: TilePoint]: Sprite
 }
 
 export interface TilemapSprites {
-    [key: `${number}, ${number}`]: {
+    [key: TilePoint]: {
         floor?: Sprite,
         above_floor?: Sprite,
         object?: Sprite,
@@ -37,13 +37,6 @@ export interface TileChange {
 }
 
 export type Layer = 'floor' | 'above_floor' | 'object'
-
-export type Bounds = {
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-}
 
 export type Point = {
     x: number,

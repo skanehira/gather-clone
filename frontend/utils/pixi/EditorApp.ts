@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js'
 import { App } from './App'
 import signal from '../signal'
-import { Layer, TilemapSprites, Tool, TilePoint, Point, RealmData, Room, TileMode, GizmoSpriteMap, SpecialTile } from './types'
+import { Layer, TilemapSprites, Tool, TilePoint, Point, RealmData, Room, TileMode, SpriteMap, SpecialTile } from './types'
 import { SheetName, SpriteSheetTile, sprites } from './spritesheet/spritesheet'
 import { formatForComparison } from '../removeExtraSpaces'
 import { v4 as uuidv4 } from 'uuid'
@@ -31,7 +31,7 @@ export class EditorApp extends App {
     private snapshotIndex: number = 0
     private present: Room = {} as Room
 
-    private gizmoSprites: GizmoSpriteMap = {}
+    private gizmoSprites: SpriteMap = {}
     private previewTiles: PIXI.Sprite[] = []
     private hiddenTiles: PIXI.Sprite[] = []
     private eraserTiles: PIXI.Sprite[] = []
