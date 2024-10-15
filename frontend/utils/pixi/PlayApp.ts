@@ -24,6 +24,7 @@ export class PlayApp extends App {
 
     private fadeTiles: SpriteMap = {}
     private fadeTileContainer: PIXI.Container = new PIXI.Container()
+    private fadeAnimation: gsap.core.Tween | null = null
     private currentPrivateAreaTiles: TilePoint[] = []
 
     constructor(uid: string, realmData: RealmData, username: string, skin: string = defaultSkin) {
@@ -57,6 +58,11 @@ export class PlayApp extends App {
     }
 
     public fadeInTiles = (privateAreaId: string) => {
+        // Stop any ongoing fade animation
+        if (this.fadeAnimation) {
+            this.fadeAnimation.kill();
+        }
+
         this.currentPrivateAreaTiles = []
         // get all tiles with privateAreaId
         const tiles = Object.entries(this.realmData.rooms[this.currentRoomIndex].tilemap).filter(([key, value]) => value.privateAreaId === privateAreaId)
@@ -66,20 +72,32 @@ export class PlayApp extends App {
             this.currentPrivateAreaTiles.push(key as TilePoint)
         }
 
-        gsap.to(this.fadeTileContainer, { alpha: 1, duration: 0.25, ease: 'power2.out' })
+        this.fadeAnimation = gsap.to(this.fadeTileContainer, { 
+            alpha: 1, 
+            duration: 0.25, 
+            ease: 'power2.out',
+            onComplete: () => {
+                this.fadeAnimation = null
+            }
+        })
     }
 
     public fadeOutTiles = () => {
-        gsap.to(this.fadeTileContainer, { 
+        // Stop any ongoing fade animation
+        if (this.fadeAnimation) {
+            this.fadeAnimation.kill();
+        }
+
+        this.fadeAnimation = gsap.to(this.fadeTileContainer, { 
             alpha: 0, 
             duration: 0.25, 
             ease: 'power2.in',
             onComplete: () => {
-                // Reset alpha of individual tiles
                 for (const key of this.currentPrivateAreaTiles) {
                     const tile = this.fadeTiles[key]
                     tile.alpha = 1
                 }
+                this.fadeAnimation = null
             }
         })
     }

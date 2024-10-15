@@ -67,8 +67,6 @@ export class Player {
 
     private currentChannel: string = 'local'
 
-    private fadeTimeout: NodeJS.Timeout | null = null
-
     constructor(skin: string, playApp: PlayApp, username: string, isLocal: boolean = false) {
         this.skin = skin
         this.playApp = playApp
@@ -299,25 +297,13 @@ export class Player {
             if (tile.privateAreaId !== this.currentChannel) {
                 this.currentChannel = tile.privateAreaId
                 videoChat.joinChannel(tile.privateAreaId)
-                if (this.fadeTimeout) {
-                    clearTimeout(this.fadeTimeout)
-                }
-                this.fadeTimeout = setTimeout(() => {
-                    if (!tile.privateAreaId) return
-                    this.playApp.fadeInTiles(tile.privateAreaId)
-                }, 50)
+                this.playApp.fadeInTiles(tile.privateAreaId)
             }
         } else {
             if (this.currentChannel !== 'local') {
                 this.currentChannel = 'local'
                 videoChat.leaveChannel()
-
-                if (this.fadeTimeout) {
-                    clearTimeout(this.fadeTimeout)
-                }
-                this.fadeTimeout = setTimeout(() => {
-                    this.playApp.fadeOutTiles()
-                }, 50)
+                this.playApp.fadeOutTiles()
             }
         }
     }
