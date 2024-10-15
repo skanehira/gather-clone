@@ -24,6 +24,7 @@ export class PlayApp extends App {
 
     private fadeTiles: SpriteMap = {}
     private fadeTileContainer: PIXI.Container = new PIXI.Container()
+    private currentPrivateAreaTiles: TilePoint[] = []
 
     constructor(uid: string, realmData: RealmData, username: string, skin: string = defaultSkin) {
         super(realmData)
@@ -55,12 +56,32 @@ export class PlayApp extends App {
         }
     }
 
-    public fadeInTiles = () => {
-        gsap.to(this.fadeTileContainer, { alpha: 1, duration: 0.5, ease: 'power2.out' })
+    public fadeInTiles = (privateAreaId: string) => {
+        this.currentPrivateAreaTiles = []
+        // get all tiles with privateAreaId
+        const tiles = Object.entries(this.realmData.rooms[this.currentRoomIndex].tilemap).filter(([key, value]) => value.privateAreaId === privateAreaId)
+        for (const [key] of tiles) {
+            const tile = this.fadeTiles[key as TilePoint]
+            tile.alpha = 0
+            this.currentPrivateAreaTiles.push(key as TilePoint)
+        }
+
+        gsap.to(this.fadeTileContainer, { alpha: 1, duration: 0.25, ease: 'power2.out' })
     }
 
     public fadeOutTiles = () => {
-        gsap.to(this.fadeTileContainer, { alpha: 0, duration: 0.5, ease: 'power2.in' })
+        gsap.to(this.fadeTileContainer, { 
+            alpha: 0, 
+            duration: 0.25, 
+            ease: 'power2.in',
+            onComplete: () => {
+                // Reset alpha of individual tiles
+                for (const key of this.currentPrivateAreaTiles) {
+                    const tile = this.fadeTiles[key]
+                    tile.alpha = 1
+                }
+            }
+        })
     }
 
     private async loadAssets() {

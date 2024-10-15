@@ -297,7 +297,7 @@ export class Player {
             if (tile.privateAreaId !== this.currentChannel) {
                 videoChat.joinChannel(tile.privateAreaId)
                 this.currentChannel = tile.privateAreaId
-            this.playApp.fadeInTiles()
+            this.playApp.fadeInTiles(tile.privateAreaId)
             }
         } else {
             if (this.currentChannel !== 'local') {
