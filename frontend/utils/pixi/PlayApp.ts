@@ -6,6 +6,7 @@ import { server } from '../backend/server'
 import { defaultSkin } from './Player/skins'
 import signal from '../signal'
 import { createClient } from '../supabase/client'
+import { gsap } from 'gsap'
 
 export class PlayApp extends App {
     private scale: number = 1.5
@@ -52,6 +53,14 @@ export class PlayApp extends App {
             this.fadeTileContainer.addChild(tile)
             this.fadeTiles[key as TilePoint] = tile
         }
+    }
+
+    public fadeInTiles = () => {
+        gsap.to(this.fadeTileContainer, { alpha: 1, duration: 0.5, ease: 'power2.out' })
+    }
+
+    public fadeOutTiles = () => {
+        gsap.to(this.fadeTileContainer, { alpha: 0, duration: 0.5, ease: 'power2.in' })
     }
 
     private async loadAssets() {
