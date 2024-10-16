@@ -85,7 +85,7 @@ export function sockets(io: Server) {
             }
 
             if (joiningInProgress.has(uid)) {
-                rejectJoin('Already joining a realm.')
+                rejectJoin('Already joining a space.')
             }
             joiningInProgress.add(uid)
 
@@ -93,7 +93,7 @@ export function sockets(io: Server) {
             if (session) {
                 const playerCount = session.getPlayerCount()
                 if (playerCount >= 30) {
-                    return rejectJoin("Realm is full. It's 30 players max.")
+                    return rejectJoin("Space is full. It's 30 players max.")
                 } 
             }
 

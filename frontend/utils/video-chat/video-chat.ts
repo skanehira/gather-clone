@@ -23,6 +23,7 @@ export class VideoChat {
         await this.client.subscribe(user, mediaType)
 
         if (mediaType === 'video') {
+            console.log('published video')
             // let player = document.getElementById(`remote-user-${user.uid}`)
             // if (player) {
             //     player.remove()
@@ -34,7 +35,6 @@ export class VideoChat {
             // document.getElementById('video-container')?.appendChild(newPlayer)
 
             // user.videoTrack?.play(`remote-user-${user.uid}`)
-
             signal.emit('user-published', user)
         }
 
@@ -44,7 +44,6 @@ export class VideoChat {
     }
 
     public onUserUnpublished = (user: IAgoraRTCRemoteUser, mediaType: "audio" | "video" | "datachannel") => {
-        
     }
 
     public onUserLeft = (user: IAgoraRTCRemoteUser, reason: string) => {
@@ -92,7 +91,7 @@ export class VideoChat {
         signal.emit('reset-users')
     }
 
-    public async joinChannel(channel: string) {
+    public async joinChannel(channel: string, uid: string) {
         if (this.channelTimeout) {
             clearTimeout(this.channelTimeout)
         }
@@ -104,7 +103,7 @@ export class VideoChat {
             }
             this.resetRemoteUsers()
 
-            await this.client.join(process.env.NEXT_PUBLIC_AGORA_APP_ID!, channel, null)
+            await this.client.join(process.env.NEXT_PUBLIC_AGORA_APP_ID!, channel, null, uid)
             this.currentChannel = channel
 
             if (this.microphoneTrack && this.microphoneTrack.enabled) {
