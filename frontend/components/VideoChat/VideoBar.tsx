@@ -15,11 +15,25 @@ const VideoBar:React.FC<VideoBarProps> = () => {
         const onUserPublished = (user: IAgoraRTCRemoteUser) => {
             setRemoteUsers(prev => ({ ...prev, [user.uid]: user }))
         }
+        const onResetUsers = () => {
+            setRemoteUsers({})
+        }
+        const onUserLeft = (user: IAgoraRTCRemoteUser) => {
+            setRemoteUsers(prev => {
+                const newUsers = { ...prev }
+                delete newUsers[user.uid]
+                return newUsers
+            })
+        }
 
         signal.on('user-published', onUserPublished)
-
+        signal.on('reset-users', onResetUsers)
+        signal.on('user-left', onUserLeft)
+        
         return () => {
             signal.off('user-published', onUserPublished)
+            signal.off('reset-users', onResetUsers)
+            signal.off('user-left', onUserLeft)
         }
     }, [])
 

@@ -49,7 +49,7 @@ export class VideoChat {
 
     public onUserLeft = (user: IAgoraRTCRemoteUser, reason: string) => {
         delete this.remoteUsers[user.uid]
-        document.getElementById(`remote-user-${user.uid}`)?.remove()
+        signal.emit('user-left', user)
     }
 
     public async toggleCamera() {
@@ -88,10 +88,8 @@ export class VideoChat {
     }
 
     private resetRemoteUsers() {
-        Object.values(this.remoteUsers).forEach((user) => {
-            document.getElementById(`remote-user-${user.uid}`)?.remove()
-        })
         this.remoteUsers = {}
+        signal.emit('reset-users')
     }
 
     public async joinChannel(channel: string) {
