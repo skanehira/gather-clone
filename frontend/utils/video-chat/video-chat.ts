@@ -1,4 +1,5 @@
 import AgoraRTC, { IAgoraRTCClient, ICameraVideoTrack, IMicrophoneAudioTrack, IAgoraRTCRemoteUser, IDataChannelConfig } from 'agora-rtc-sdk-ng'
+import signal from '../signal'
 
 export class VideoChat {
     private client: IAgoraRTCClient = AgoraRTC.createClient({ codec: "vp8", mode: "rtc" })
@@ -12,32 +13,38 @@ export class VideoChat {
 
     constructor() {
         AgoraRTC.setLogLevel(4)
-        this.client.on('user-published', this.onUserJoined)
+        this.client.on('user-published', this.onUserPublished)
+        this.client.on('user-unpublished', this.onUserUnpublished)
         this.client.on('user-left', this.onUserLeft)
     }
 
-    public onUserJoined = async (user: IAgoraRTCRemoteUser, mediaType: "audio" | "video" | "datachannel", config?: IDataChannelConfig) => {
+    public onUserPublished = async (user: IAgoraRTCRemoteUser, mediaType: "audio" | "video" | "datachannel", config?: IDataChannelConfig) => {
         this.remoteUsers[user.uid] = user
         await this.client.subscribe(user, mediaType)
-        console.log('USER JOINED')
 
         if (mediaType === 'video') {
-            let player = document.getElementById(`remote-user-${user.uid}`)
-            if (player) {
-                player.remove()
-            }
+            // let player = document.getElementById(`remote-user-${user.uid}`)
+            // if (player) {
+            //     player.remove()
+            // }
 
-            const newPlayer = document.createElement('div')
-            newPlayer.id = `remote-user-${user.uid}`
-            newPlayer.className = 'w-[233px] h-[130px] bg-secondary rounded-lg overflow-hidden'
-            document.getElementById('video-container')?.appendChild(newPlayer)
+            // const newPlayer = document.createElement('div')
+            // newPlayer.id = `remote-user-${user.uid}`
+            // newPlayer.className = 'w-[233px] h-[130px] bg-secondary rounded-lg overflow-hidden'
+            // document.getElementById('video-container')?.appendChild(newPlayer)
 
-            user.videoTrack?.play(`remote-user-${user.uid}`)
+            // user.videoTrack?.play(`remote-user-${user.uid}`)
+
+            signal.emit('user-published', user)
         }
 
         if (mediaType === 'audio') {
             user.audioTrack?.play()
         }
+    }
+
+    public onUserUnpublished = (user: IAgoraRTCRemoteUser, mediaType: "audio" | "video" | "datachannel") => {
+        
     }
 
     public onUserLeft = (user: IAgoraRTCRemoteUser, reason: string) => {
