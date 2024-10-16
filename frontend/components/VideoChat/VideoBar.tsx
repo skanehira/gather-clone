@@ -75,7 +75,7 @@ function RemoteUser({ user }: { user: RemoteUser }) {
     return (
         <div className='w-[233px] h-[130px] bg-primary bg-opacity-70 rounded-lg overflow-hidden relative'>
             <div ref={containerRef} id={`remote-user-${user.uid}`} className='w-full h-full'></div>
-            <p className='absolute bottom-1 left-2 bg-black bg-opacity-70 rounded-full z-10 text-xs p-1 px-2'>
+            <p className='absolute bottom-1 left-2 bg-black bg-opacity-70 rounded-full z-10 text-xs p-1 px-2 select-none'>
                 {user.uid}
             </p>
         </div>

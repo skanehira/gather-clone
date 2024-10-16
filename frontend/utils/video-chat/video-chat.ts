@@ -63,6 +63,11 @@ export class VideoChat {
             return false
         }
         await this.cameraTrack.setEnabled(!this.cameraTrack.enabled)
+
+        if (this.client.connectionState === 'CONNECTED' && this.cameraTrack.enabled) {
+            await this.client.publish([this.cameraTrack])
+        }
+
         return !this.cameraTrack.enabled
     }
 
@@ -77,6 +82,11 @@ export class VideoChat {
             return false
         }
         await this.microphoneTrack.setEnabled(!this.microphoneTrack.enabled)
+
+        if (this.client.connectionState === 'CONNECTED' && this.microphoneTrack.enabled) {
+            await this.client.publish([this.microphoneTrack])
+        }
+
         return !this.microphoneTrack.enabled
     }
 
