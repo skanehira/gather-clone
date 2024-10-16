@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useVideoChat } from '@/app/hooks/useVideoChat'
 import { IAgoraRTCRemoteUser } from 'agora-rtc-sdk-ng'
 import signal from '@/utils/signal'
-
+import { MicrophoneSlash } from '@phosphor-icons/react'
 
 interface RemoteUser {
     uid: string
@@ -75,7 +74,8 @@ function RemoteUser({ user }: { user: RemoteUser }) {
     return (
         <div className='w-[233px] h-[130px] bg-primary bg-opacity-70 rounded-lg overflow-hidden relative'>
             <div ref={containerRef} id={`remote-user-${user.uid}`} className='w-full h-full'></div>
-            <p className='absolute bottom-1 left-2 bg-black bg-opacity-70 rounded-full z-10 text-xs p-1 px-2 select-none'>
+            <p className='absolute bottom-1 left-2 bg-black bg-opacity-70 rounded-full z-10 text-xs p-1 px-2 select-none flex flex-row items-center gap-1'>
+                {!user.micEnabled && <MicrophoneSlash className='w-3 h-3 text-[#FF2F49]' />}
                 {user.uid}
             </p>
         </div>

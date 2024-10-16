@@ -44,6 +44,9 @@ export class VideoChat {
     }
 
     public onUserUnpublished = (user: IAgoraRTCRemoteUser, mediaType: "audio" | "video" | "datachannel") => {
+        if (mediaType === 'audio') {
+            user.audioTrack?.stop()
+        }
     }
 
     public onUserLeft = (user: IAgoraRTCRemoteUser, reason: string) => {
