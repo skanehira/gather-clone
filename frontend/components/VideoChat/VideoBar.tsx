@@ -34,6 +34,8 @@ const VideoBar:React.FC = () => {
             })
         }
         const onAudioUnpublished = (user: IAgoraRTCRemoteUser) => {
+            if (!remoteUsers[user.uid]) return
+
             setRemoteUsers(prev => {
                 const newUsers = { ...prev }
                 newUsers[user.uid].micEnabled = false
@@ -41,6 +43,8 @@ const VideoBar:React.FC = () => {
             })
         }
         const onAudioPublished = (user: IAgoraRTCRemoteUser) => {
+            if (!remoteUsers[user.uid]) return
+
             setRemoteUsers(prev => {
                 const newUsers = { ...prev }
                 newUsers[user.uid].micEnabled = true
