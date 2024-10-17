@@ -64,7 +64,7 @@ const VideoBar:React.FC = () => {
             signal.off('audio-unpublished', onAudioUnpublished)
             signal.off('audio-published', onAudioPublished)
         }
-    }, [])
+    }, [remoteUsers])
 
     return (
         <main className='absolute z-10 w-full flex flex-col items-center pt-2 top-0'>
