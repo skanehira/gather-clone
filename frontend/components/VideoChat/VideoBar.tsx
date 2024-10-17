@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { IAgoraRTCRemoteUser } from 'agora-rtc-sdk-ng'
 import signal from '@/utils/signal'
 import { MicrophoneSlash } from '@phosphor-icons/react'
+import AnimatedCharacter from '@/app/play/SkinMenu/AnimatedCharacter'
 
 interface RemoteUser {
     uid: string
@@ -61,6 +62,22 @@ export default VideoBar
 function RemoteUser({ user }: { user: RemoteUser }) {
 
     const containerRef = useRef<HTMLDivElement>(null)
+    const [skin, setSkin] = useState<string>('')
+
+    useEffect(() => {
+        const onVideoSkin = (data: { skin: string, username: string }) => {
+            if (data.username === user.user.uid) {
+                setSkin(data.skin)
+            }
+        }
+
+        signal.on('video-skin', onVideoSkin)
+
+        signal.emit('getSkinForUsername', user.user.uid)
+        return () => {
+            signal.off('video-skin', onVideoSkin)
+        }
+    }, [])
 
     useEffect(() => {
         if (user.cameraEnabled) {
@@ -76,6 +93,11 @@ function RemoteUser({ user }: { user: RemoteUser }) {
 
     return (
         <div className='w-[233px] h-[130px] bg-[#0f0f1d] bg-opacity-90 rounded-lg overflow-hidden relative'>
+            <div className='absolute w-full h-full grid place-items-center'>
+                <div className='w-[48px] h-[48px] bg-[#222222] rounded-full border-2 border-[#424A61] grid place-items-center overflow-hidden'>
+                    {skin && <AnimatedCharacter src={`/sprites/characters/Character_${skin}.png`} noAnimation className='w-full h-full relative bottom-1'/>}
+                </div>
+            </div>
             <div ref={containerRef} id={`remote-user-${user.uid}`} className='w-full h-full'></div>
             <p className='absolute bottom-1 left-2 bg-black bg-opacity-70 rounded-full z-10 text-xs p-1 px-2 select-none flex flex-row items-center gap-1'>
                 {!user.micEnabled && <MicrophoneSlash className='w-3 h-3 text-[#FF2F49]' />}

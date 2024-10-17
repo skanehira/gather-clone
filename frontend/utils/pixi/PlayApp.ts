@@ -351,6 +351,10 @@ export class PlayApp extends App {
         if (player) {
             player.changeSkin(data.skin)
         }
+        signal.emit('video-skin', {
+            skin: data.skin,
+            username: player.username
+        })
     }
 
     private setUpSignalListeners = () => {
@@ -358,6 +362,7 @@ export class PlayApp extends App {
         signal.on('switchSkin', this.onSwitchSkin)
         signal.on('disableInput', this.onDisableInput)
         signal.on('message', this.onMessage)
+        signal.on('getSkinForUsername', this.getSkinForUsername)
     }
 
     private removeSignalListeners = () => {
@@ -365,6 +370,7 @@ export class PlayApp extends App {
         signal.off('switchSkin', this.onSwitchSkin)
         signal.off('disableInput', this.onDisableInput)
         signal.off('message', this.onMessage)
+        signal.off('getSkinForUsername', this.getSkinForUsername)
     }
 
     private onRequestSkin = () => {
@@ -374,6 +380,22 @@ export class PlayApp extends App {
     private onSwitchSkin = (skin: string) => {
         this.player.changeSkin(skin)
         server.socket.emit('changedSkin', skin)
+    }
+
+    private getSkinForUsername = (username: string) => {
+        for (const player of Object.values(this.players)) {
+            if (player.username === username) {
+                signal.emit('video-skin', {
+                    skin: player.skin,
+                    username: player.username
+                })
+                return
+            }
+        }
+        signal.emit('video-skin', {
+            skin: defaultSkin,
+            username: username
+        })
     }
 
     private onDisableInput = (disable: boolean) => {

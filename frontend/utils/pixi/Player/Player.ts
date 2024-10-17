@@ -43,7 +43,7 @@ function formatText(message: string, maxLength: number): string {
 export class Player {
 
     public skin: string = defaultSkin
-    private username: string = ''
+    public username: string = ''
 
     public parent: PIXI.Container = new PIXI.Container()
     private textMessage: PIXI.Text = new PIXI.Text({})
