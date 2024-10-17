@@ -17,12 +17,17 @@ export class VideoChat {
         this.client.on('user-unpublished', this.onUserUnpublished)
         this.client.on('user-left', this.onUserLeft)
         this.client.on('user-info-updated', this.onUserInfoUpdated)
+        this.client.on('user-joined', this.onUserJoined)
     }
 
     private onUserInfoUpdated = (uid: string) => {
         if (!this.remoteUsers[uid]) return
-
         signal.emit('user-info-updated', this.remoteUsers[uid])
+    }
+
+    private onUserJoined = (user: IAgoraRTCRemoteUser) => {
+        this.remoteUsers[user.uid] = user
+        signal.emit('user-info-updated', user)
     }
 
     public onUserPublished = async (user: IAgoraRTCRemoteUser, mediaType: "audio" | "video" | "datachannel", config?: IDataChannelConfig) => {
@@ -30,7 +35,6 @@ export class VideoChat {
         await this.client.subscribe(user, mediaType)
 
         if (mediaType === 'audio') {
-            console.log('audio received')
             user.audioTrack?.play()
         }
 
