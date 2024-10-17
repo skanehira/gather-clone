@@ -16,31 +16,26 @@ export class VideoChat {
         this.client.on('user-published', this.onUserPublished)
         this.client.on('user-unpublished', this.onUserUnpublished)
         this.client.on('user-left', this.onUserLeft)
+        this.client.on('user-info-updated', this.onUserInfoUpdated)
+    }
+
+    private onUserInfoUpdated = (uid: string) => {
+        if (!this.remoteUsers[uid]) return
+
+        signal.emit('user-published', this.remoteUsers[uid])
     }
 
     public onUserPublished = async (user: IAgoraRTCRemoteUser, mediaType: "audio" | "video" | "datachannel", config?: IDataChannelConfig) => {
         this.remoteUsers[user.uid] = user
         await this.client.subscribe(user, mediaType)
 
-        if (mediaType === 'video') {
-            console.log('published video')
-            // let player = document.getElementById(`remote-user-${user.uid}`)
-            // if (player) {
-            //     player.remove()
-            // }
-
-            // const newPlayer = document.createElement('div')
-            // newPlayer.id = `remote-user-${user.uid}`
-            // newPlayer.className = 'w-[233px] h-[130px] bg-secondary rounded-lg overflow-hidden'
-            // document.getElementById('video-container')?.appendChild(newPlayer)
-
-            // user.videoTrack?.play(`remote-user-${user.uid}`)
-            signal.emit('user-published', user)
+        if (mediaType === 'audio') {
+            console.log('audio received')
+            user.audioTrack?.play()
         }
 
-        if (mediaType === 'audio') {
-            user.audioTrack?.play()
-            signal.emit('audio-published', user)
+        if (mediaType === 'audio' || mediaType === 'video') {
+            signal.emit('user-published', user)
         }
     }
 
@@ -76,6 +71,8 @@ export class VideoChat {
         return !this.cameraTrack.enabled
     }
 
+    // TODO: Set it up so microphone gets muted and unmuted instead of enabled and disabled
+
     public async toggleMicrophone() {
         if (!this.microphoneTrack) {
             this.microphoneTrack = await AgoraRTC.createMicrophoneAudioTrack()
@@ -86,13 +83,9 @@ export class VideoChat {
 
             return false
         }
-        await this.microphoneTrack.setEnabled(!this.microphoneTrack.enabled)
+        await this.microphoneTrack.setMuted(!this.microphoneTrack.muted)
 
-        if (this.client.connectionState === 'CONNECTED' && this.microphoneTrack.enabled) {
-            await this.client.publish([this.microphoneTrack])
-        }
-
-        return !this.microphoneTrack.enabled
+        return this.microphoneTrack.muted
     }
 
     public playVideoTrackAtElementId(elementId: string) {
@@ -122,6 +115,7 @@ export class VideoChat {
             this.currentChannel = channel
 
             if (this.microphoneTrack && this.microphoneTrack.enabled) {
+                console.log('publishing mic track')
                 await this.client.publish([this.microphoneTrack])
             }
             if (this.cameraTrack && this.cameraTrack.enabled) {

@@ -42,28 +42,18 @@ const VideoBar:React.FC = () => {
                 return newUsers
             })
         }
-        const onAudioPublished = (user: IAgoraRTCRemoteUser) => {
-            if (!remoteUsers[user.uid]) return
-
-            setRemoteUsers(prev => {
-                const newUsers = { ...prev }
-                newUsers[user.uid].micEnabled = true
-                return newUsers
-            })
-        }
 
         signal.on('user-published', onUserPublished)
         signal.on('reset-users', onResetUsers)
         signal.on('user-left', onUserLeft)
         signal.on('audio-unpublished', onAudioUnpublished)
-        signal.on('audio-published', onAudioPublished)
         return () => {
-            signal.off('user-published', onUserPublished)
+            signal.off('video-published', onUserPublished)
             signal.off('reset-users', onResetUsers)
             signal.off('user-left', onUserLeft)
             signal.off('audio-unpublished', onAudioUnpublished)
-            signal.off('audio-published', onAudioPublished)
         }
+
     }, [remoteUsers])
 
     return (
@@ -84,12 +74,15 @@ function RemoteUser({ user }: { user: RemoteUser }) {
     const containerRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        // if the container has a child, remove it
-        if (containerRef.current?.firstChild) {
-            containerRef.current.removeChild(containerRef.current.firstChild)
+        if (user.cameraEnabled) {
+            // if the container has a child, remove it
+            if (containerRef.current?.firstChild) {
+                containerRef.current.removeChild(containerRef.current.firstChild)
+            }
+
+            user.user.videoTrack?.play(`remote-user-${user.uid}`)
         }
 
-        user.user.videoTrack?.play(`remote-user-${user.uid}`)
     }, [user])
 
     return (
