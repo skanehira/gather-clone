@@ -15,7 +15,7 @@ const VideoBar:React.FC = () => {
     const [remoteUsers, setRemoteUsers] = useState<{ [uid: string]: RemoteUser }>({})
 
     useEffect(() => {
-        const onUserPublished = (user: IAgoraRTCRemoteUser) => {
+        const onUserInfoUpdated = (user: IAgoraRTCRemoteUser) => {
             setRemoteUsers(prev => ({ ...prev, [user.uid]: {
                 uid: user.uid.toString(),
                 micEnabled: user.hasAudio,
@@ -33,25 +33,14 @@ const VideoBar:React.FC = () => {
                 return newUsers
             })
         }
-        const onAudioUnpublished = (user: IAgoraRTCRemoteUser) => {
-            if (!remoteUsers[user.uid]) return
 
-            setRemoteUsers(prev => {
-                const newUsers = { ...prev }
-                newUsers[user.uid].micEnabled = false
-                return newUsers
-            })
-        }
-
-        signal.on('user-published', onUserPublished)
+        signal.on('user-info-updated', onUserInfoUpdated)
         signal.on('reset-users', onResetUsers)
         signal.on('user-left', onUserLeft)
-        signal.on('audio-unpublished', onAudioUnpublished)
         return () => {
-            signal.off('video-published', onUserPublished)
+            signal.off('user-info-updated', onUserInfoUpdated)
             signal.off('reset-users', onResetUsers)
             signal.off('user-left', onUserLeft)
-            signal.off('audio-unpublished', onAudioUnpublished)
         }
 
     }, [remoteUsers])

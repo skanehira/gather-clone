@@ -22,7 +22,7 @@ export class VideoChat {
     private onUserInfoUpdated = (uid: string) => {
         if (!this.remoteUsers[uid]) return
 
-        signal.emit('user-published', this.remoteUsers[uid])
+        signal.emit('user-info-updated', this.remoteUsers[uid])
     }
 
     public onUserPublished = async (user: IAgoraRTCRemoteUser, mediaType: "audio" | "video" | "datachannel", config?: IDataChannelConfig) => {
@@ -35,14 +35,13 @@ export class VideoChat {
         }
 
         if (mediaType === 'audio' || mediaType === 'video') {
-            signal.emit('user-published', user)
+            signal.emit('user-info-updated', user)
         }
     }
 
     public onUserUnpublished = (user: IAgoraRTCRemoteUser, mediaType: "audio" | "video" | "datachannel") => {
         if (mediaType === 'audio') {
             user.audioTrack?.stop()
-            signal.emit('audio-unpublished', user)
         }
     }
 
