@@ -40,12 +40,14 @@ export class VideoChat {
 
         if (mediaType === 'audio') {
             user.audioTrack?.play()
+            signal.emit('audio-published', user)
         }
     }
 
     public onUserUnpublished = (user: IAgoraRTCRemoteUser, mediaType: "audio" | "video" | "datachannel") => {
         if (mediaType === 'audio') {
             user.audioTrack?.stop()
+            signal.emit('audio-unpublished', user)
         }
     }
 
