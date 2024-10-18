@@ -1,5 +1,6 @@
 import AgoraRTC, { IAgoraRTCClient, ICameraVideoTrack, IMicrophoneAudioTrack, IAgoraRTCRemoteUser, IDataChannelConfig } from 'agora-rtc-sdk-ng'
 import signal from '../signal'
+import { createHash } from 'crypto'
 
 export class VideoChat {
     private client: IAgoraRTCClient = AgoraRTC.createClient({ codec: "vp8", mode: "rtc" })
@@ -102,7 +103,7 @@ export class VideoChat {
         signal.emit('reset-users')
     }
 
-    public async joinChannel(channel: string, uid: string) {
+    public async joinChannel(channel: string, uid: string, realmId: string) {
         if (this.channelTimeout) {
             clearTimeout(this.channelTimeout)
         }
@@ -114,11 +115,11 @@ export class VideoChat {
             }
             this.resetRemoteUsers()
 
-            await this.client.join(process.env.NEXT_PUBLIC_AGORA_APP_ID!, channel, null, uid)
+            const uniqueChannelId = this.createUniqueChannelId(realmId, channel)
+            await this.client.join(process.env.NEXT_PUBLIC_AGORA_APP_ID!, uniqueChannelId, null, uid)
             this.currentChannel = channel
 
             if (this.microphoneTrack && this.microphoneTrack.enabled) {
-                console.log('publishing mic track')
                 await this.client.publish([this.microphoneTrack])
             }
             if (this.cameraTrack && this.cameraTrack.enabled) {
@@ -155,6 +156,11 @@ export class VideoChat {
         }
         this.microphoneTrack = null
         this.cameraTrack = null
+    }
+
+    private createUniqueChannelId(realmId: string, channel: string): string {
+        const combined = `${realmId}-${channel}`;
+        return createHash('md5').update(combined).digest('hex').substring(0, 16);
     }
 }
 

@@ -17,6 +17,7 @@ export class PlayApp extends App {
     private fadeOverlay: PIXI.Graphics = new PIXI.Graphics()
     private fadeDuration: number = 0.5
     private uid: string = ''
+    public realmId: string = ''
     public players: { [key: string]: Player } = {}
     private disableInput: boolean = false
 
@@ -27,9 +28,10 @@ export class PlayApp extends App {
     private fadeAnimation: gsap.core.Tween | null = null
     private currentPrivateAreaTiles: TilePoint[] = []
 
-    constructor(uid: string, realmData: RealmData, username: string, skin: string = defaultSkin) {
+    constructor(uid: string, realmId: string, realmData: RealmData, username: string, skin: string = defaultSkin) {
         super(realmData)
         this.uid = uid
+        this.realmId = realmId
         this.player = new Player(skin, this, username, true)
     }
 
