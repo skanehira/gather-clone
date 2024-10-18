@@ -27,11 +27,10 @@ export default function Index() {
             </div>
             <div className='flex flex-row items-center justify-center mt-6 gap-8'>
                 <p className='text-sm'>created by <a href="https://www.trevdev.me/" target="_blank" rel="noopener noreferrer" className='font-bold underline'>trevdev</a></p>
-                <a href='https://github.com/trevorwrightdev/gather-clone' target="_blank" rel="noopener noreferrer" 
-                    className='inline-flex flex-row items-center justify-center gap-2'>
-                    <p className='text-sm underline font-bold'>see the code</p>
+                <div className='inline-flex flex-row items-center justify-center gap-2'>
+                    <a href='https://github.com/trevorwrightdev/gather-clone' target="_blank" rel="noopener noreferrer" className='text-sm underline font-bold'>see the code</a>
                     <Code className='w-4 h-4'/>
-                </a>
+                </div>
             </div>
             <AnimatedCharacter src='/sprites/characters/Character_009.png'/>
         </div>
