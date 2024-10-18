@@ -293,7 +293,7 @@ export class Player {
         if (!this.isLocal) return
 
         const tile = this.playApp.realmData.rooms[this.playApp.currentRoomIndex].tilemap[`${newTilePosition.x}, ${newTilePosition.y}`]
-        if (tile.privateAreaId) {
+        if (tile && tile.privateAreaId) {
             if (tile.privateAreaId !== this.currentChannel) {
                 this.currentChannel = tile.privateAreaId
                 videoChat.joinChannel(tile.privateAreaId, this.username, this.playApp.realmId)

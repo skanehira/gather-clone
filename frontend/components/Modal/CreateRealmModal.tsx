@@ -9,12 +9,15 @@ import { toast } from 'react-toastify'
 import { useRouter } from 'next/navigation' 
 import revalidate from '@/utils/revalidate'
 import { removeExtraSpaces } from '@/utils/removeExtraSpaces'
+import defaultMap from '@/utils/defaultmap.json'
 
 const CreateRealmModal:React.FC = () => {
     
     const { modal, setModal } = useModal()
     const [realmName, setRealmName] = useState<string>('')
     const [loading, setLoading] = useState<boolean>(false)
+
+    const [useDefaultMap, setUseDefaultMap] = useState<boolean>(true)
 
     const router = useRouter()
 
@@ -29,10 +32,16 @@ const CreateRealmModal:React.FC = () => {
         const uid = user.id
 
         setLoading(true)
-        const { data, error } = await supabase.from('realms').insert({
+
+        const realmData: any = {
             owner_id: uid,
             name: realmName,
-        }).select()
+        }
+        if (useDefaultMap) {
+            realmData.map_data = defaultMap
+        }
+
+        const { data, error } = await supabase.from('realms').insert(realmData).select()
 
         if (error) {
             toast.error(error?.message)
@@ -59,6 +68,15 @@ const CreateRealmModal:React.FC = () => {
             <div className='flex flex-col items-center p-4 w-[400px] gap-4'>
                 <h1 className='text-2xl'>Create a Space</h1>
                 <BasicInput label={'Space Name'} className='w-[280px]' value={realmName} onChange={onChange} maxLength={32}/>
+                <div className='flex items-center gap-2 w-[280px]'>
+                    <input
+                        type="checkbox"
+                        id="useDefaultMap"
+                        checked={useDefaultMap}
+                        onChange={(e) => setUseDefaultMap(e.target.checked)}
+                    />
+                    <label htmlFor="useDefaultMap">Use starter map</label>
+                </div>
                 <BasicButton disabled={realmName.length <= 0 || loading} onClick={createRealm} className='text-lg'>
                     Create
                 </BasicButton>
