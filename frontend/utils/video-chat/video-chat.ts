@@ -1,6 +1,7 @@
 import AgoraRTC, { IAgoraRTCClient, ICameraVideoTrack, IMicrophoneAudioTrack, IAgoraRTCRemoteUser, IDataChannelConfig } from 'agora-rtc-sdk-ng'
 import signal from '../signal'
 import { createHash } from 'crypto'
+import { generateToken } from './generateToken'
 
 export class VideoChat {
     private client: IAgoraRTCClient = AgoraRTC.createClient({ codec: "vp8", mode: "rtc" })
@@ -110,13 +111,16 @@ export class VideoChat {
 
         this.channelTimeout = setTimeout(async () => {
             if (channel === this.currentChannel) return
+            const uniqueChannelId = this.createUniqueChannelId(realmId, channel)
+            const token = await generateToken(uniqueChannelId)
+            if (!token) return
+
             if (this.client.connectionState === 'CONNECTED') {
                 await this.client.leave()
             }
             this.resetRemoteUsers()
 
-            const uniqueChannelId = this.createUniqueChannelId(realmId, channel)
-            await this.client.join(process.env.NEXT_PUBLIC_AGORA_APP_ID!, uniqueChannelId, null, uid)
+            await this.client.join(process.env.NEXT_PUBLIC_AGORA_APP_ID!, uniqueChannelId, token, uid)
             this.currentChannel = channel
 
             if (this.microphoneTrack && this.microphoneTrack.enabled) {

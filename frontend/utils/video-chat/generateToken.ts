@@ -1,11 +1,14 @@
 'use server'
-import 'server-only'
 import { RtcRole, RtcTokenBuilder } from 'agora-token'
+import { createClient } from '../supabase/server'
 
-export async function generateToken() {
+export async function generateToken(channelName: string) {
+    const supabase = createClient()
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) return null
+
     const appId = process.env.NEXT_PUBLIC_AGORA_APP_ID!
     const appCertificate = process.env.APP_CERTIFICATE!
-    const channelName = ''
     const uid = 0
     const role = RtcRole.PUBLISHER
     const expireTime = 3600
