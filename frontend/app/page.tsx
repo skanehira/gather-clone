@@ -10,9 +10,9 @@ export default function Index() {
     <div className='w-full grid place-items-center h-screen gradient p-4'>
         <div className='max-w-[600px] flex flex-col items-center'>
             <div>
-                <h1 className='font-semibold text-3xl'>Welcome to My Gather Town Clone!</h1>   
+                <h1 className='font-semibold text-3xl'>Welcome to My Gather Clone!</h1>   
                 <p className='w-full text-xl my-6'>
-                    This project is a functional recreation of the core features of Gather Town, 
+                    This project is a functional recreation of the core features of Gather, 
                     built as a portfolio piece to demonstrate my passion for virtual spaces and the technical skills
                     needed to contribute to your team at Gather. 
                 </p>
