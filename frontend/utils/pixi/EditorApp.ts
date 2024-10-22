@@ -1184,12 +1184,12 @@ export class EditorApp extends App {
             this.currentRoomIndex -= 1
         }
 
-        this.gizmoContainer.removeChildren()
-        this.drawSpecialTiles()
         this.updateRealmData(newRealmData, false, true)
         this.snapshots = []
         this.setSnapshotIndex(0)
         signal.emit('roomDeleted', { deletedIndex: index, newIndex: this.currentRoomIndex })
+        this.gizmoContainer.removeChildren()
+        this.drawSpecialTiles()
     }
 
     private onChangeRoomName = ({ index, newName }: { index: number, newName: string }) => {
