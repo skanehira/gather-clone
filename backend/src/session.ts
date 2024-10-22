@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { kickPlayer } from './sockets/helpers'
+import { v4 as uuidv4 } from 'uuid'
 
 export type RealmData = {
     spawnpoint: {
@@ -169,15 +170,21 @@ export class Session {
         delete this.players[uid]
     }
 
-    public changeRoom(uid: string, roomIndex: number): void {
-        if (!this.players[uid]) return
+    public changeRoom(uid: string, roomIndex: number, x: number, y: number): string[] {
+        if (!this.players[uid]) return []
 
         const player = this.players[uid]
 
         this.playerRooms[player.room].delete(uid)
         this.playerRooms[roomIndex].add(uid)
 
+        const coordKey = `${player.x}, ${player.y}`
+        if (this.playerPositions[player.room][coordKey]) {
+            this.playerPositions[player.room][coordKey].delete(uid)
+        }
+
         player.room = roomIndex
+        return this.movePlayer(uid, x, y)
     }
 
     public getPlayersInRoom(roomIndex: number): Player[] {
@@ -208,7 +215,7 @@ export class Session {
         return this.players[uid].room
     }
 
-    public movePlayer(uid: string, x: number, y: number): void {
+    public movePlayer(uid: string, x: number, y: number): string[] {
         const oldCoordKey = `${this.players[uid].x}, ${this.players[uid].y}`
         if (this.playerPositions[this.players[uid].room][oldCoordKey]) {
             this.playerPositions[this.players[uid].room][oldCoordKey].delete(uid)
@@ -223,12 +230,71 @@ export class Session {
         }
 
         this.playerPositions[this.players[uid].room][coordKey].add(uid)
+
+        return this.setProximityIdsWithPlayer(uid)
     }
 
-    public setProximityIdForPlayer(uid: string): void {
+    public setProximityIdsWithPlayer(uid: string): string[] {
+        const player = this.players[uid]
+        const proximityTiles = this.getProximityTiles(player.x, player.y)
+        const changedPlayers: Set<string> = new Set<string>()
+        const originalProximityId = player.proximityId
+        let otherPlayersExist = false
+        for (const tile of proximityTiles) {
+            const playersInTile = this.playerPositions[player.room][tile]
+            if (!playersInTile) continue
+            // iterate over players in tile
+            for (const otherUid of playersInTile) {
+                if (otherUid === uid) continue
+                otherPlayersExist = true
 
+                const otherPlayer = this.players[otherUid]
+                if (otherPlayer.proximityId === null) {
+                    if (player.proximityId === null) {
+                        // set the proximity id to a uuid
+                        player.proximityId = uuidv4()
+                        // Only add uid if proximityId changed
+                        if (player.proximityId !== originalProximityId) {
+                            changedPlayers.add(uid)
+                        }
+                    }
+
+                    otherPlayer.proximityId = player.proximityId
+                    changedPlayers.add(otherUid)
+                } else if (player.proximityId !== otherPlayer.proximityId) {
+                    player.proximityId = otherPlayer.proximityId
+                    // Only add uid if proximityId changed
+                    if (player.proximityId !== originalProximityId) {
+                        changedPlayers.add(uid)
+                    }
+                } 
+            }
+        }
+
+        if (!otherPlayersExist) {
+            player.proximityId = null
+            // Only add uid if proximityId changed
+            if (originalProximityId !== null) {
+                changedPlayers.add(uid)
+            }
+        }
+
+        return Array.from(changedPlayers)
     }
 
+    private getProximityTiles(x: number, y: number): string[] {
+        const proximityTiles: string[] = []
+        const range = 3
+
+        for (let dx = -range; dx <= range; dx++) {
+            for (let dy = -range; dy <= range; dy++) {
+                const tileX = x + dx
+                const tileY = y + dy
+                proximityTiles.push(`${tileX}, ${tileY}`)
+            }
+        }
+        return proximityTiles
+    }
 }
 
 const sessionManager = new SessionManager()

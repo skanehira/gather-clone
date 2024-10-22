@@ -27,6 +27,7 @@ export class PlayApp extends App {
     private fadeTileContainer: PIXI.Container = new PIXI.Container()
     private fadeAnimation: gsap.core.Tween | null = null
     private currentPrivateAreaTiles: TilePoint[] = []
+    public proximityId: string | null = null
 
     constructor(uid: string, realmId: string, realmData: RealmData, username: string, skin: string = defaultSkin) {
         super(realmData)
@@ -47,6 +48,7 @@ export class PlayApp extends App {
 
     private setUpFadeTiles = () => {
         this.fadeTiles = {}
+        this.fadeTileContainer.removeChildren()
 
         for (const [key] of Object.entries(this.realmData.rooms[this.currentRoomIndex].tilemap)) {
             const [x, y] = key.split(',').map(Number)
@@ -87,7 +89,7 @@ export class PlayApp extends App {
     public fadeOutTiles = () => {
         // Stop any ongoing fade animation
         if (this.fadeAnimation) {
-            this.fadeAnimation.kill();
+            this.fadeAnimation.kill()
         }
 
         this.fadeAnimation = gsap.to(this.fadeTileContainer, { 
@@ -442,6 +444,14 @@ export class PlayApp extends App {
         })
     }
 
+    private onProximityUpdate = (data: any) => {
+        this.proximityId = data.proximityId
+        console.log({ proximityId: this.proximityId })
+        if (this.proximityId) {
+            this.player.checkIfShouldJoinChannel(this.player.currentTilePosition)
+        }
+    }
+
     private setUpSocketEvents = () => {
         server.socket.on('playerLeftRoom', this.onPlayerLeftRoom)
         server.socket.on('playerJoinedRoom', this.onPlayerJoinedRoom)
@@ -451,6 +461,7 @@ export class PlayApp extends App {
         server.socket.on('receiveMessage', this.onReceiveMessage)
         server.socket.on('disconnect', this.onDisconnect)
         server.socket.on('kicked', this.onKicked)
+        server.socket.on('proximityUpdate', this.onProximityUpdate)
     }
 
     private removeSocketEvents = () => {
@@ -462,6 +473,7 @@ export class PlayApp extends App {
         server.socket.off('receiveMessage', this.onReceiveMessage)
         server.socket.off('disconnect', this.onDisconnect)
         server.socket.off('kicked', this.onKicked)
+        server.socket.off('proximityUpdate', this.onProximityUpdate)
     }
 
     private removeEvents = () => {

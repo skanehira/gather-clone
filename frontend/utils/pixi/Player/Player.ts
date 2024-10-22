@@ -289,7 +289,7 @@ export class Player {
         }
     }
 
-    private checkIfShouldJoinChannel = (newTilePosition: Point) => {
+    public checkIfShouldJoinChannel = (newTilePosition: Point) => {
         if (!this.isLocal) return
 
         const tile = this.playApp.realmData.rooms[this.playApp.currentRoomIndex].tilemap[`${newTilePosition.x}, ${newTilePosition.y}`]
@@ -300,7 +300,13 @@ export class Player {
                 this.playApp.fadeInTiles(tile.privateAreaId)
             }
         } else {
-            if (this.currentChannel !== 'local') {
+            if (this.playApp.proximityId) {
+                if (this.playApp.proximityId !== this.currentChannel) {
+                    this.currentChannel = this.playApp.proximityId
+                    videoChat.joinChannel(this.playApp.proximityId, this.username, this.playApp.realmId)
+                    this.playApp.fadeOutTiles()
+                }
+            } else if (this.currentChannel !== 'local') {
                 this.currentChannel = 'local'
                 videoChat.leaveChannel()
                 this.playApp.fadeOutTiles()

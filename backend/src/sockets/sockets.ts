@@ -159,28 +159,50 @@ export function sockets(io: Server) {
 
         on('movePlayer', MovePlayer, ({ session, data }) => {  
             const player = session.getPlayer(socket.handshake.query.uid as string)
-            session.movePlayer(player.uid, data.x, data.y)
-            session.setProximityIdForPlayer(player.uid)
+            const changedPlayers = session.movePlayer(player.uid, data.x, data.y)
 
             emit('playerMoved', {
                 uid: player.uid,
                 x: player.x,
                 y: player.y
             })
+
+            for (const uid of changedPlayers) {
+                const changedPlayerData = session.getPlayer(uid)
+
+                emitToSocketIds([changedPlayerData.socketId], 'proximityUpdate', {
+                    proximityId: changedPlayerData.proximityId
+                })
+            }
         })  
 
         on('teleport', Teleport, ({ session, data }) => {
             const uid = socket.handshake.query.uid as string
             const player = session.getPlayer(uid)
-            player.x = data.x
-            player.y = data.y
             if (player.room !== data.roomIndex) {
                 emit('playerLeftRoom', uid)
                 const session = sessionManager.getPlayerSession(uid)
-                session.changeRoom(uid, data.roomIndex)
+                const changedPlayers = session.changeRoom(uid, data.roomIndex, data.x, data.y)
                 emit('playerJoinedRoom', player)
+
+                for (const uid of changedPlayers) {
+                    const changedPlayerData = session.getPlayer(uid)
+
+                    emitToSocketIds([changedPlayerData.socketId], 'proximityUpdate', {
+                        proximityId: changedPlayerData.proximityId
+                    })
+                }
             } else {
+                const changedPlayers = session.movePlayer(player.uid, data.x, data.y)
                 emit('playerTeleported', { uid, x: player.x, y: player.y })
+
+                for (const uid of changedPlayers) {
+                    const changedPlayerData = session.getPlayer(uid)
+
+                    emitToSocketIds([changedPlayerData.socketId], 'proximityUpdate', {
+                        proximityId: changedPlayerData.proximityId
+                    })
+                }
             }
         })
 
