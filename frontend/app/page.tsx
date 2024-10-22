@@ -33,12 +33,6 @@ export default function Index() {
         </div>
         <AnimatedCharacter src='/sprites/characters/Character_009.png'/>
       </div>
-      
-      <footer className='absolute bottom-0 w-full text-center pb-8'>
-        <Link href='/privacy-policy' className='text-xs underline font-bold'>
-            privacy policy
-        </Link>
-      </footer>
     </div>
   )
 }
