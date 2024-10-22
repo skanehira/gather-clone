@@ -16,7 +16,7 @@ export class PlayApp extends App {
     private teleportLocation: Point | null = null
     private fadeOverlay: PIXI.Graphics = new PIXI.Graphics()
     private fadeDuration: number = 0.5
-    private uid: string = ''
+    public uid: string = ''
     public realmId: string = ''
     public players: { [key: string]: Player } = {}
     private disableInput: boolean = false
@@ -357,7 +357,7 @@ export class PlayApp extends App {
         }
         signal.emit('video-skin', {
             skin: data.skin,
-            username: player.username
+            uid: data.uid,
         })
     }
 
@@ -366,7 +366,7 @@ export class PlayApp extends App {
         signal.on('switchSkin', this.onSwitchSkin)
         signal.on('disableInput', this.onDisableInput)
         signal.on('message', this.onMessage)
-        signal.on('getSkinForUsername', this.getSkinForUsername)
+        signal.on('getSkinForUid', this.getSkinForUid)
     }
 
     private removeSignalListeners = () => {
@@ -374,7 +374,7 @@ export class PlayApp extends App {
         signal.off('switchSkin', this.onSwitchSkin)
         signal.off('disableInput', this.onDisableInput)
         signal.off('message', this.onMessage)
-        signal.off('getSkinForUsername', this.getSkinForUsername)
+        signal.off('getSkinForUid', this.getSkinForUid)
     }
 
     private onRequestSkin = () => {
@@ -386,19 +386,13 @@ export class PlayApp extends App {
         server.socket.emit('changedSkin', skin)
     }
 
-    private getSkinForUsername = (username: string) => {
-        for (const player of Object.values(this.players)) {
-            if (player.username === username) {
-                signal.emit('video-skin', {
-                    skin: player.skin,
-                    username: player.username
-                })
-                return
-            }
-        }
+    private getSkinForUid = (uid: string) => {
+        const player = this.players[uid]
+        if (!player) return
+
         signal.emit('video-skin', {
-            skin: defaultSkin,
-            username: username
+            skin: player.skin,
+            uid: uid,
         })
     }
 
@@ -446,7 +440,6 @@ export class PlayApp extends App {
 
     private onProximityUpdate = (data: any) => {
         this.proximityId = data.proximityId
-        console.log({ proximityId: this.proximityId })
         if (this.proximityId) {
             this.player.checkIfShouldJoinChannel(this.player.currentTilePosition)
         }
