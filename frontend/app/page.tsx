@@ -12,8 +12,7 @@ export default function Index() {
           <h1 className='font-semibold text-3xl'>Welcome to My Gather Clone!</h1>   
           <p className='w-full text-xl my-6'>
             This project is a functional recreation of the core features of Gather, 
-            built as a portfolio piece to demonstrate my passion for virtual spaces and the technical skills
-            needed to contribute to your team at Gather. 
+            built as a portfolio piece to demonstrate my technical skills and passion for virtual spaces.
           </p>
         </div>
         
