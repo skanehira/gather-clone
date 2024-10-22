@@ -6,6 +6,7 @@ import { getPlayRealmData } from '@/utils/supabase/getPlayRealmData'
 import PlayClient from '../PlayClient'
 import { updateVisitedRealms } from '@/utils/supabase/updateVisitedRealms'
 import { formatEmailToName } from '@/utils/formatEmailToName'
+import { generateToken } from '@/utils/video-chat/generateToken'
 
 export default async function Play({ params, searchParams }: { params: { id: string }, searchParams: { shareId: string } }) {
 
@@ -24,6 +25,11 @@ export default async function Play({ params, searchParams }: { params: { id: str
 
         return <NotFound specialMessage={message}/>
     }
+    const token = await generateToken()
+    if (!token) {
+        return <NotFound specialMessage='Failed to generate token' />
+    }
+
     const realm = data
     const map_data = realm.map_data
 
