@@ -15,7 +15,6 @@ export default function Index() {
             built as a portfolio piece to demonstrate my technical skills and passion for virtual spaces.
           </p>
         </div>
-        
         <div className='flex flex-row items-center justify-center'>
           <Link href='/app' >
             <BasicButton>

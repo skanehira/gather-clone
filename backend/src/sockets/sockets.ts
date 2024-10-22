@@ -161,6 +161,9 @@ export function sockets(io: Server) {
             const player = session.getPlayer(socket.handshake.query.uid as string)
             player.x = data.x
             player.y = data.y
+
+            session.setProximityIdForPlayer(player.uid)
+            
             emit('playerMoved', {
                 uid: player.uid,
                 x: player.x,

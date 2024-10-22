@@ -36,6 +36,7 @@ export interface Player {
     room: number,
     socketId: string,
     skin: string,
+    proximityId: string | null,
 }
 
 export const defaultSkin = '009'
@@ -111,7 +112,8 @@ export class SessionManager {
 }
 
 export class Session {
-    private roomData: { [key: number]: Set<string> } = {}
+    private playerRooms: { [key: number]: Set<string> } = {}
+    private playerPositions: { [key: string]: Set<string> } = {}
     public players: { [key: string]: Player } = {}
     public id: string
     public map_data: RealmData 
@@ -119,6 +121,11 @@ export class Session {
     constructor(id: string, mapData: RealmData) {
         this.id = id
         this.map_data = mapData 
+
+        for (let i = 0; i < mapData.rooms.length; i++) {
+            this.playerRooms[i] = new Set<string>()
+            this.playerPositions[i] = new Set<string>()
+        }
     }
 
     public addPlayer(socketId: string, uid: string, username: string, skin: string) {
@@ -126,7 +133,6 @@ export class Session {
         const spawnIndex = this.map_data.spawnpoint.roomIndex
         const spawnX = this.map_data.spawnpoint.x
         const spawnY = this.map_data.spawnpoint.y
-        if (!this.roomData[spawnIndex]) this.roomData[spawnIndex] = new Set<string>()
 
         const player: Player = {
             uid,
@@ -136,9 +142,10 @@ export class Session {
             room: spawnIndex,
             socketId: socketId,
             skin,
+            proximityId: null,
         }
 
-        this.roomData[spawnIndex].add(uid)
+        this.playerRooms[spawnIndex].add(uid)
         this.players[uid] = player
     }
 
@@ -146,7 +153,7 @@ export class Session {
         if (!this.players[uid]) return
 
         const player = this.players[uid]
-        this.roomData[player.room].delete(uid)
+        this.playerRooms[player.room].delete(uid)
         delete this.players[uid]
     }
 
@@ -155,17 +162,14 @@ export class Session {
 
         const player = this.players[uid]
 
-        this.roomData[player.room].delete(uid)
-
-        if (!this.roomData[roomIndex]) this.roomData[roomIndex] = new Set<string>()
-
-        this.roomData[roomIndex].add(uid)
+        this.playerRooms[player.room].delete(uid)
+        this.playerRooms[roomIndex].add(uid)
 
         player.room = roomIndex
     }
 
     public getPlayersInRoom(roomIndex: number): Player[] {
-        const players = Array.from(this.roomData[roomIndex] || [])
+        const players = Array.from(this.playerRooms[roomIndex] || [])
             .map(uid => this.players[uid])
 
         return players
@@ -190,6 +194,10 @@ export class Session {
 
     public getPlayerRoom(uid: string): number {
         return this.players[uid].room
+    }
+
+    public setProximityIdForPlayer(uid: string): void {
+
     }
 
 }
