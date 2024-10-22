@@ -113,7 +113,10 @@ export class SessionManager {
 
 export class Session {
     private playerRooms: { [key: number]: Set<string> } = {}
-    private playerPositions: { [key: string]: Set<string> } = {}
+
+    // roomIndex -> position -> uid
+    private playerPositions: { [key: number]: { [key: string]: Set<string> } } = {}
+
     public players: { [key: string]: Player } = {}
     public id: string
     public map_data: RealmData 
@@ -124,7 +127,7 @@ export class Session {
 
         for (let i = 0; i < mapData.rooms.length; i++) {
             this.playerRooms[i] = new Set<string>()
-            this.playerPositions[i] = new Set<string>()
+            this.playerPositions[i] = {}
         }
     }
 
@@ -146,6 +149,11 @@ export class Session {
         }
 
         this.playerRooms[spawnIndex].add(uid)
+        const coordKey = `${spawnX}, ${spawnY}`
+        if (!this.playerPositions[spawnIndex][coordKey]) {
+            this.playerPositions[spawnIndex][coordKey] = new Set<string>()
+        }
+        this.playerPositions[spawnIndex][coordKey].add(uid)
         this.players[uid] = player
     }
 
@@ -154,6 +162,10 @@ export class Session {
 
         const player = this.players[uid]
         this.playerRooms[player.room].delete(uid)
+
+        const coordKey = `${player.x}, ${player.y}`
+        delete this.playerPositions[player.room][coordKey]
+
         delete this.players[uid]
     }
 
@@ -194,6 +206,23 @@ export class Session {
 
     public getPlayerRoom(uid: string): number {
         return this.players[uid].room
+    }
+
+    public movePlayer(uid: string, x: number, y: number): void {
+        const oldCoordKey = `${this.players[uid].x}, ${this.players[uid].y}`
+        if (this.playerPositions[this.players[uid].room][oldCoordKey]) {
+            this.playerPositions[this.players[uid].room][oldCoordKey].delete(uid)
+        }
+
+        this.players[uid].x = x
+        this.players[uid].y = y
+
+        const coordKey = `${x}, ${y}`
+        if (!this.playerPositions[this.players[uid].room][coordKey]) {
+            this.playerPositions[this.players[uid].room][coordKey] = new Set<string>()
+        }
+
+        this.playerPositions[this.players[uid].room][coordKey].add(uid)
     }
 
     public setProximityIdForPlayer(uid: string): void {
