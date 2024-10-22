@@ -24,6 +24,7 @@ export default async function Play({ params, searchParams }: { params: { id: str
 
         return <NotFound specialMessage={message}/>
     }
+
     const realm = data
     const map_data = realm.map_data
 
