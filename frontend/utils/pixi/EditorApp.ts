@@ -502,8 +502,12 @@ export class EditorApp extends App {
             if (this.collidersFromSpritesMap[key] === true) return true
 
             if (this.isTeleporterAtPosition(colliderCoordinates.x, colliderCoordinates.y)) return true
-
-            if (this.realmData.spawnpoint.x === colliderCoordinates.x && this.realmData.spawnpoint.y === colliderCoordinates.y) return true
+            if (
+                this.currentRoomIndex === this.realmData.spawnpoint.roomIndex && 
+                this.realmData.spawnpoint.x === colliderCoordinates.x && 
+                this.realmData.spawnpoint.y === colliderCoordinates.y) {
+                return true
+            }
         }
         return false
     }
