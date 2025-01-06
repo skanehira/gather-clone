@@ -1,6 +1,6 @@
 # Gather Clone
 
-## This is clone of Gather.town with fully customizable spaces and seamless proximity based video chat.
+This is clone of Gather.town with fully customizable spaces and seamless proximity based video chat.
 
 This project is a fork of Realms, my previous project inspired by Gather. You can check it out [here.](https://github.com/trevorwrightdev/realms)
 
