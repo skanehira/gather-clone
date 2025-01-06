@@ -1,10 +1,10 @@
 # Gather Clone
 
-This is clone of Gather.town with fully customizable spaces and seamless proximity based video chat.
+A clone of Gather.town featuring fully customizable spaces and seamless proximity based video chat.
 
-This project is a fork of Realms, my previous project inspired by Gather. You can check it out [here.](https://github.com/trevorwrightdev/realms)
+The project is a fork of Realms, my previous project inspired by Gather. You can check it out [here.](https://github.com/trevorwrightdev/realms)
 
-This app was designed to have the core features of Gather. It contains:
+The app was designed to include the core features of Gather, including:
 
 - Customizable spaces using tilesets
 - Proximity video chat
@@ -12,7 +12,7 @@ This app was designed to have the core features of Gather. It contains:
 - Multiplayer networking
 - Tile-based movement
 
-This is a TypeScript web app primarily built with Next.js, Supabase, Socket.io, TailwindCSS, Pixi.js, and Agora for video chat. 
+Built as a TypeScript web app primarily using Next.js, Supabase, Socket.io, TailwindCSS, Pixi.js, and Agora for video chat. 
 
 ### How to install
 
@@ -31,7 +31,7 @@ cd backend
 npm install
 ```
 
-Since this project uses both Supabase and Agora, you will need to create a Supabase project and an Agora project.
+The project requires both Supabase and Agora - you'll need to create projects in both platforms.
 
 Create a .env file in the `backend` directory with the following variables:
 ```
