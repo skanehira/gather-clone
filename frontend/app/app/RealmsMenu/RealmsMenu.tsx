@@ -78,7 +78,7 @@ const RealmsMenu:React.FC<RealmsMenuProps> = ({ realms, errorMessage }) => {
                 })}
                 <div className='fixed bottom-0 w-full bg-primary grid place-items-center p-2'>
                      <BasicButton className='w-[90%] text-xl px-0 py-0' disabled={selectedRealm === null} onClick={() => router.push(getLink())}>
-                        Join Realm
+                        Join Space
                     </BasicButton>
                 </div>
             </div>
