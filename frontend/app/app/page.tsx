@@ -3,8 +3,6 @@ import { redirect } from 'next/navigation'
 import { Navbar } from '@/components/Navbar/Navbar'
 import RealmsMenu from './RealmsMenu/RealmsMenu'
 import { getVisitedRealms } from '@/utils/supabase/getVisitedRealms'
-import { request } from '@/utils/backend/requests'
-import { access } from 'fs'
 
 export default async function App() {
 
