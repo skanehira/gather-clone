@@ -15,12 +15,13 @@ export default function Index() {
             built as a portfolio piece to demonstrate my technical skills and passion for virtual spaces.
           </p>
         </div>
-        <div className='flex flex-row items-center justify-center'>
+        <div className='flex flex-col items-center justify-center'>
           <Link href='/app' >
             <BasicButton>
               Get Started
             </BasicButton>
           </Link>
+          <span className='mt-4 text-sm'>or watch a demo <a href="https://www.youtube.com/watch?v=AnhsC7Fmt20" target="_blank" rel="noopener noreferrer" className='underline'>here</a></span>
         </div>
         <div className='flex flex-row items-center justify-center mt-6 gap-8'>
           <p className='text-sm'>created by <a href="https://www.trevdev.me/" target="_blank" rel="noopener noreferrer" className='font-bold underline'>trevdev</a></p>
